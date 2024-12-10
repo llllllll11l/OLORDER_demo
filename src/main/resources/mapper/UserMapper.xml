@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.UserMapper">
+    <resultMap type="com.example.demo.entity.User" id="user_result">
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="passwordHash" column="password_hash" jdbcType="VARCHAR"/>
+        <result property="userType" column="user_type" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="registrationDate" column="registration_date" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="profilePicture" column="profile_picture" jdbcType="VARCHAR"/>
+        <result property="lastLoginDate" column="last_login_date" jdbcType="TIMESTAMP"/>
+        <result property="lastPasswordChange" column="last_password_change" jdbcType="TIMESTAMP"/>
+        <result property="isEmailVerified" column="is_email_verified" jdbcType="BOOLEAN"/>
+        <result property="isPhoneVerified" column="is_phone_verified" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        user_id, username, password_hash, email, user_type, phone_number, registration_date, status, last_login_date, profile_picture, last_password_change, is_email_verified, is_phone_verified
+    </sql>
+
+    <select id="findAllUsers" resultMap="user_result">
+        select
+        <include refid="base_column_list"/>
+        from users
+        order by user_id desc
+    </select>
+
+    <select id="selectByUsernameAndPwd" resultMap="user_result">
+        select
+        <include refid="base_column_list"/>
+        from users
+        where username=#{username} and password_hash=#{passwordHash}
+    </select>
+
+</mapper>
