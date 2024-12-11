@@ -5,10 +5,11 @@ import com.example.demo.entity.UserType;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class UserRegisterParam {
+public class UserRegisterParam implements Serializable {
     private String username;
     private String passwordHash;
     private UserType userType;

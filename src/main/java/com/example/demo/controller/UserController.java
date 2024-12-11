@@ -64,10 +64,29 @@ public class UserController {
         return ResultGenerator.genSuccessResult(userVO);
     }
 
+
+/*
+    RequestBody不要搞嵌套，应该长这样:
+    {
+        "username": "string",
+        "email": "string",
+        "phoneNumber": "string",
+        "passwordHash": "string",
+        "profilePicture": "string"
+    }
+ */
     @PutMapping("/user/updinfo")
     @Operation(summary="update", description = "")
-    public Result updateInfo(@RequestBody @Parameter(name="用户信息")UserUpdateInfoParam userUpdateInfoParam,
+    public Result updateInfo(@RequestBody UserUpdateInfoParam userUpdateInfoParam,
                              @TokenRequired User user){
+        /*
+        System.out.println("Request body received:");
+        System.out.println("username: " + userUpdateInfoParam.getUsername());
+        System.out.println("email: " + userUpdateInfoParam.getEmail());
+        System.out.println("phoneNumber: " + userUpdateInfoParam.getPhoneNumber());
+        System.out.println("passwordHash: " + userUpdateInfoParam.getPasswordHash());
+        System.out.println("profilePicture: " + userUpdateInfoParam.getProfilePicture());
+        */
         ServiceResultEnum serviceResult=userService.updateInfo(userUpdateInfoParam, user.getUserId());
         if(serviceResult== UPDATE_FAILED){
             return ResultGenerator.genFailResult(UPDATE_FAILED.getResult());

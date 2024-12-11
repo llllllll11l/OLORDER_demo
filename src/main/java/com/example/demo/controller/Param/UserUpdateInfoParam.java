@@ -7,14 +7,11 @@ import java.io.Serializable;
 
 @Data
 public class UserUpdateInfoParam implements Serializable {
-    @Schema(description = "")
     private String username;
-    @Schema(description = "")
     private String email;
-    @Schema
     private String phoneNumber;
-    @Schema
     private String passwordHash;
-    @Schema
     private String profilePicture;
+
+    public UserUpdateInfoParam(){}
 }

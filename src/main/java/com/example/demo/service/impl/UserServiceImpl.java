@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         Timestamp nowTimestamp=new Timestamp(now);
         Timestamp expireTimestamp=new Timestamp(now+2*24*3600*1000);
         if(user!=null){
+            user.setLastLoginDate(nowTimestamp);
             if(user.getStatus()==DELETED)
                 return ServiceResultEnum.USER_DELETED;
             String token=generateToken();
@@ -61,17 +62,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public ServiceResultEnum updateInfo(UserUpdateInfoParam userUpdateInfo, String userId) {
         User user = userMapper.selectByUserId(userId);
-
+        System.out.println("--------"+userUpdateInfo.getEmail()+userUpdateInfo.getPasswordHash());
         if (user == null) {
             CustomException.fail(ServiceResultEnum.USER_NOT_FOUND.getResult());
+            return ServiceResultEnum.UPDATE_FAILED;
         }
         if(userUpdateInfo.getUsername()!=null) {
             user.setUsername(userUpdateInfo.getUsername());
         }
         if(userUpdateInfo.getEmail()!=null){
+            user.setIsEmailVerified(true);
             user.setEmail(userUpdateInfo.getEmail());
         }
         if(userUpdateInfo.getPhoneNumber()!=null){
+            user.setIsPhoneVerified(true);
             user.setPhoneNumber(userUpdateInfo.getPhoneNumber());
         }
         if(userUpdateInfo.getProfilePicture()!=null){
