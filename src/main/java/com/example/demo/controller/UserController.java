@@ -21,15 +21,13 @@ import java.security.Provider;
 import java.util.List;
 
 @RestController
-@Tag(name="用户接口", description = "-")
+@Tag(name="用户接口", description = "")
 @RequestMapping("/api/v1")
 public class UserController {
 
     @Autowired UserMapper userMapper;
 
-
-    @Resource
-    private UserService userService;
+    @Resource private UserService userService;
 
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
