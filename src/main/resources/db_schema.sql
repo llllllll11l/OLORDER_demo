@@ -1,7 +1,19 @@
 use test;
 
+DROP TABLE IF EXISTS store_status_history;
+DROP TABLE IF EXISTS user_status_history;
+DROP TABLE IF EXISTS product_reviews;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS store_reviews;
+DROP TABLE IF EXISTS user_tokens;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS stores;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS admins;
+
 -- 用户表
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     user_id VARCHAR(255) PRIMARY KEY,  -- 用户ID，主键
     username VARCHAR(255) NOT NULL UNIQUE,  -- 用户名，唯一索引
     password_hash VARCHAR(255) NOT NULL,  -- 密码哈希
@@ -11,7 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     profile_picture VARCHAR(255),  -- 用户头像
     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 注册日期
     last_login_date TIMESTAMP,  -- 上次登录时间
-    status ENUM('ACTIVE', 'SUSPENDED', 'DISABLED', 'DELETED') NOT NULL,  -- 用户状态
+    status ENUM('ACTIVE', 'SUSPENDED', 'DISABLED', 'DELETED') NOT NULL DEFAULT 'ACTIVE',  -- 用户状态
     last_password_change TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 上次密码修改时间
     is_email_verified BOOLEAN DEFAULT FALSE,  -- 邮箱是否验证
     is_phone_verified BOOLEAN DEFAULT FALSE,  -- 手机是否验证
@@ -21,8 +33,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- 管理员表
-CREATE TABLE IF NOT EXISTS admins (
-    admin_id VARCHAR(255) PRIMARY KEY,  -- 管理员ID，主键
+CREATE TABLE admins (
+    admin_id VARCHAR(255) NOT NULL PRIMARY KEY,  -- 管理员ID，主键
     admin_name VARCHAR(255) NOT NULL UNIQUE,  -- 管理员用户名，唯一约束
     password_hash VARCHAR(255) NOT NULL,  -- 密码哈希
     email VARCHAR(255) UNIQUE,  -- 管理员邮箱，唯一约束
@@ -30,23 +42,23 @@ CREATE TABLE IF NOT EXISTS admins (
     profile_picture VARCHAR(255),  -- 管理员头像
     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 注册日期
     last_login_date TIMESTAMP,  -- 上次登录时间
-    status ENUM('ACTIVE', 'DISABLED') NOT NULL,  -- 管理员状态
+    status ENUM('ACTIVE', 'DISABLED') NOT NULL DEFAULT 'ACTIVE',  -- 管理员状态
     last_password_change TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 上次密码修改时间
-    failed_login_attempts INT DEFAULT 0,  -- 登录失败尝试次数
     INDEX idx_admins_admin_name (admin_name),  -- 为管理员用户名创建索引
     INDEX idx_admins_email (email)  -- 为管理员邮箱创建索引
 );
 
 -- 店铺表
+DROP TABLE IF EXISTS stores;
 CREATE TABLE IF NOT EXISTS stores (
-    store_id VARCHAR(255) PRIMARY KEY,  -- 店铺ID，主键
+    store_id VARCHAR(255) NOT NULL PRIMARY KEY,  -- 店铺ID，主键
     store_name VARCHAR(255) NOT NULL UNIQUE,  -- 店铺名称，唯一约束
     store_description TEXT,  -- 店铺描述
     store_address VARCHAR(255) NOT NULL,  -- 店铺地址
     contact_number VARCHAR(20) NOT NULL,  -- 联系电话
-    store_type ENUM('RESTAURANT', 'RETAIL', 'SERVICE') NOT NULL,  -- 店铺类型
-    store_status ENUM('PENDING', 'APPROVED', 'DISABLED') NOT NULL,  -- 店铺状态
-    verification_docs JSON NOT NULL,  -- 店铺验证文档
+    store_type ENUM('RESTAURANT', 'RETAIL', 'SERVICE'),  -- 店铺类型
+    store_status ENUM('PENDING', 'APPROVED', 'DISABLED') NOT NULL DEFAULT 'PENDING',  -- 店铺状态
+    verification_docs JSON,  -- 店铺验证文档
     owner_id VARCHAR(255) NOT NULL,  -- 店铺所有者ID
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  -- 创建时间
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 更新时间

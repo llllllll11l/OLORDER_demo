@@ -64,7 +64,7 @@ public class UserController {
         return ResultGenerator.genSuccessResult(userVO);
     }
 
-    @PutMapping("/user/info")
+    @PutMapping("/user/updinfo")
     @Operation(summary="update", description = "")
     public Result updateInfo(@RequestBody @Parameter(name="用户信息")UserUpdateInfoParam userUpdateInfoParam,
                              @TokenRequired User user){

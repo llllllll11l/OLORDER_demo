@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import static com.example.demo.Util.Util.generateToken;
 import static com.example.demo.entity.UserStatus.*;
@@ -60,13 +61,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public ServiceResultEnum updateInfo(UserUpdateInfoParam userUpdateInfo, String userId) {
         User user = userMapper.selectByUserId(userId);
+
         if (user == null) {
             CustomException.fail(ServiceResultEnum.USER_NOT_FOUND.getResult());
         }
-        user.setUsername(userUpdateInfo.getUsername());
-
+        if(userUpdateInfo.getUsername()!=null) {
+            user.setUsername(userUpdateInfo.getUsername());
+        }
+        if(userUpdateInfo.getEmail()!=null){
+            user.setEmail(userUpdateInfo.getEmail());
+        }
+        if(userUpdateInfo.getPhoneNumber()!=null){
+            user.setPhoneNumber(userUpdateInfo.getPhoneNumber());
+        }
+        if(userUpdateInfo.getProfilePicture()!=null){
+            user.setProfilePicture(userUpdateInfo.getProfilePicture());
+        }
         if (!Util.hashPassword("").equals(userUpdateInfo.getPasswordHash())){
             user.setPasswordHash(userUpdateInfo.getPasswordHash());
+            Timestamp now=new Timestamp(System.currentTimeMillis());
+            user.setLastPasswordChange(now);
         }
         if (userMapper.updateByUser(user)>0) {
             return ServiceResultEnum.SUCCESS;
@@ -87,7 +101,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceResultEnum register(String username, String passwordHash, UserType userType){
-        return null;
+    public ServiceResultEnum register(String username, String password, UserType userType){
+        User reguser=new User();
+        reguser.setUsername(username);
+        reguser.setPasswordHash(Util.hashPassword(password));
+        reguser.setUserType(userType);
+        reguser.setIsEmailVerified(false);
+        reguser.setIsPhoneVerified(false);
+        reguser.setUserId(UUID.randomUUID().toString());
+        java.sql.Timestamp regDate=new Timestamp(System.currentTimeMillis());
+        reguser.setRegistrationDate(regDate);
+        if(userMapper.insertSelective(reguser)>0){
+            return ServiceResultEnum.SUCCESS;
+        }
+        else{
+            return ServiceResultEnum.REGISTER_FAILED;
+        }
     }
 }
