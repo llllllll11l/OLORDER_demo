@@ -11,5 +11,5 @@ public @interface TokenRequired {
      *
      * @return
      */
-    String value() default "";
+    String value() default "user";
 }

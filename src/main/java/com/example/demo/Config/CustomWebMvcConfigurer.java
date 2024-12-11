@@ -16,7 +16,9 @@ public class CustomWebMvcConfigurer implements WebMvcConfigurer {
      *
      * @param argumentResolvers
      */
+    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers){
         argumentResolvers.add(tokenRequiredMethodArgumentResolver);
+        //System.out.println("Argument resolver added.");
     }
 }

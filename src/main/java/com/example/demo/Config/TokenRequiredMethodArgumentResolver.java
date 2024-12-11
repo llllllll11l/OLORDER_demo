@@ -21,13 +21,18 @@ import static com.example.demo.Enums.ServiceResultEnum.*;
 public class TokenRequiredMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Autowired private UserMapper userMapper;
     @Autowired private UserTokenMapper userTokenMapper;
+
     public TokenRequiredMethodArgumentResolver(){}
 
     public boolean supportsParameter(MethodParameter param){
-        return param.hasMethodAnnotation(TokenRequired.class);
+        //System.out.println("Checking parameter: " + param.getParameterName());
+        //System.out.println("Has TokenRequired annotation: " + param.hasMethodAnnotation(TokenRequired.class));
+        return param.hasParameterAnnotation(TokenRequired.class);
     }
 
     public Object resolveArgument(MethodParameter param, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory){
+        //System.out.println("Resolving parameter: " + param.getParameterName());
+        //System.out.println("Parameter type: " + param.getParameterType());
         if(param.getParameterAnnotation(TokenRequired.class) != null){
             User user=null;
             String token=webRequest.getHeader("Token");
