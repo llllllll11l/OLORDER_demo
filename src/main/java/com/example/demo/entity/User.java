@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 public class User {
@@ -14,12 +14,9 @@ public class User {
     private String phoneNumber;
     private UserType userType;
     private String profilePicture;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date registrationDate;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date lastLoginDate;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date lastPasswordChange;
+    private Timestamp registrationDate;
+    private Timestamp lastLoginDate;
+    private Timestamp lastPasswordChange;
     private UserStatus status;
     Boolean isEmailVerified;
     Boolean isPhoneVerified;

@@ -42,4 +42,6 @@
         from users
         where user_id=#{userId}
     </select>
+
+
 </mapper>

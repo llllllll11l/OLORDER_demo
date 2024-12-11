@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserIdentifyTestController {
     @Autowired UserTokenMapper userTokenMapper;
     @GetMapping("/IdentifyTest")
-    @Operation(summary="测试接口", description="")
+    @Operation(summary="Token测试接口", description="只测试Token是否有效，不验证用户登陆信息")
     public Result identifyTest(@TokenRequired User user){
         //if(user!=null){
         //    System.out.println("---identifying user id  "+user.getUserId()+"  naming  "+user.getUsername());

@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class Result {
+public class Result<T> {
     @Schema(description = "返回数据")
-    private String data;
+    private T data;
     @Schema(description = "返回码")
     private int resultCode;
     @Schema(description = "返回信息")

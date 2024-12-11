@@ -7,4 +7,5 @@ public interface UserTokenMapper {
     UserToken selectByUserId(String userId);
     UserToken selectByToken(String token);
     int updateByUserIdSelective(UserToken record);
+    int deleteByUserId(String userId);
 }
