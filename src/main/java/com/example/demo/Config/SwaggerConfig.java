@@ -1,7 +1,10 @@
 package com.example.demo.Config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +17,14 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("接口文档")
                         .version("2.0")
-                        .description("Swagger 接口文档"));
+                        .description("Swagger 接口文档"))
+                .components(components())
+                .addSecurityItem(new SecurityRequirement().addList("tokenScheme"));
+
+    }
+
+    private Components components(){
+        return new Components()
+                .addSecuritySchemes("tokenScheme", new SecurityScheme().type(SecurityScheme.Type.APIKEY).in(SecurityScheme.In.HEADER).name("token"));
     }
 }

@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Hello")
+@Tag(name = "Hello,world! Hello, Swagger 3!", description = "")
 @RestController
 public class Hello {
     @Operation
