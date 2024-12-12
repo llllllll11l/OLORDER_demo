@@ -1,12 +1,10 @@
 package com.example.demo.entity;
 
+import com.example.demo.Enums.OrderStatus;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.util.Date;
 
 @Data
 public class Orders {

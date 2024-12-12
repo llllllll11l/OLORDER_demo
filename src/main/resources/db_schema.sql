@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS products (
     product_description TEXT,  -- 商品描述
     product_category VARCHAR(255) NOT NULL,  -- 商品类别
     price DECIMAL(10, 2) NOT NULL,  -- 商品价格
-    stock_quantity INT NOT NULL,  -- 商品库存
-    product_status ENUM('ACTIVE', 'inACTIVE') NOT NULL,  -- 商品状态
+    stock_quantity INT NOT NULL DEFAULT -1,  -- 商品库存
+    product_status ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',  -- 商品状态
     create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 创建时间
     update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 更新时间
     product_image VARCHAR(255),  -- 商品图片
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_id VARCHAR(255) PRIMARY KEY,  -- 订单ID，主键
     customer_id VARCHAR(255) NOT NULL,  -- 顾客ID
     store_id VARCHAR(255) NOT NULL,  -- 店铺ID
-    order_status ENUM('pending', 'shipped', 'delivered', 'canceled') NOT NULL DEFAULT 'pending',  -- 订单状态
+    order_status ENUM('PENDING', 'SHIPPED', 'DELIVERED', 'CANCELED') NOT NULL DEFAULT 'PENDING',  -- 订单状态
     order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 订单创建时间
     total_amount DECIMAL(10, 2) NOT NULL,  -- 订单总金额
     delivery_address TEXT NOT NULL,  -- 配送地址

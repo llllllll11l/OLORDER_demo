@@ -1,11 +1,7 @@
 package com.example.demo.controller.vo;
 
-import com.example.demo.entity.UserStatus;
-import com.example.demo.entity.UserType;
+import com.example.demo.Enums.UserType;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 @Data
 public class UserVO {

@@ -1,13 +1,11 @@
-package com.example.demo.entity;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+package com.example.demo.controller.Param;
 
 import com.example.demo.Enums.ProductStatus;
-import lombok.Data;
 
-@Data
-public class Product {
-    private String productID;
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+public class ProductUpdateParam implements Serializable {
     private String productName;
     private String productDescription;
     private String productCategory;
@@ -15,7 +13,6 @@ public class Product {
     private int stockQuantity;
     private ProductStatus productStatus;
     private String productImage;
-    private Timestamp createDate;
-    private Timestamp updateDate;
-    private String storeID;
+
+    public ProductUpdateParam(){}
 }

@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.Enums.AdminStatus;
 import lombok.Data;
 
 import java.sql.Timestamp;

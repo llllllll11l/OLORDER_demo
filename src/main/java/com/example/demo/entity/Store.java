@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Timestamp;
+import com.example.demo.Enums.StoreStatus;
+import com.example.demo.Enums.StoreType;
+import lombok.Data;
 
 @Data
 public class Store {

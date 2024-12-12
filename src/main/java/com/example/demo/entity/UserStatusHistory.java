@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
+import com.example.demo.Enums.UserHistoryStatus;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 

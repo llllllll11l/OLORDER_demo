@@ -30,8 +30,10 @@ import static com.example.demo.Enums.ServiceResultEnum.*;
 @Tag(name="用户接口", description = "")
 @RequestMapping("/api/v1")
 public class UserController {
-    @Autowired UserMapper userMapper;
-    @Resource private UserService userService;
+    @Autowired
+    UserMapper userMapper;
+    @Resource
+    private UserService userService;
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/user/login")

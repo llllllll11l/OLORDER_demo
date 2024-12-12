@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.controller.Param.UserUpdateInfoParam;
-import com.example.demo.entity.UserType;
+import com.example.demo.Enums.UserType;
 
 public interface UserService {
     /**
