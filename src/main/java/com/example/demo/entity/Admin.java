@@ -19,5 +19,4 @@ public class Admin {
     private Date lastLoginDate;
     private AdminStatus status;
     private Timestamp LastPasswordChange;
-
 }
