@@ -1,6 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.Enums.ServiceResultEnum;
+import com.example.demo.controller.Param.ProductAddParam;
+import com.example.demo.controller.Param.ProductUpdateParam;
+import com.example.demo.controller.Param.StoreAddParam;
 import com.example.demo.controller.Param.StoreUpdateInfoParam;
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Store;
@@ -11,37 +14,34 @@ public interface StoreService {
     /**
      * 添加店铺
      *
-     * @param store
+     * @param storeAddParam
      * @return
      */
-    ServiceResultEnum addStore(Store store);
+    ServiceResultEnum addStore(StoreAddParam storeAddParam);
 
     /**
      * 修改店铺信息
      *
      * @param storeUpdateInfoParam
-     * @param storeId
      * @return
      */
-    ServiceResultEnum updateInfo(StoreUpdateInfoParam storeUpdateInfoParam, String storeId);
+    ServiceResultEnum updateInfo(StoreUpdateInfoParam storeUpdateInfoParam);
 
     /**
      * 更新店铺商品
      *
-     * @param product
-     * @param storeId
+     * @param productUpdateParam
      * @return
      */
-    ServiceResultEnum updateProduct(Product product, String storeId);
+    ServiceResultEnum updateProduct(ProductUpdateParam productUpdateParam);
 
     /**
      * 添加店铺商品
      *
-     * @param product
-     * @param storeId
+     * @param productAddParam
      * @return
      */
-    ServiceResultEnum addProduct(Product product, String storeId);
+    ServiceResultEnum addProduct(ProductAddParam productAddParam);
 
     /**
      * 上传店铺凭证文件（URL）

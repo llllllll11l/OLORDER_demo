@@ -12,6 +12,7 @@ public class StoreUpdateInfoParam implements Serializable {
     private String storeDescription;
     private StoreType storeType;
     private String contactNumber;
+    private String storeId;
 
     public StoreUpdateInfoParam(){}
 }

@@ -1,6 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.Enums.ServiceResultEnum;
+import com.example.demo.controller.Param.ProductAddParam;
+import com.example.demo.controller.Param.ProductUpdateParam;
+import com.example.demo.controller.Param.StoreAddParam;
 import com.example.demo.controller.Param.StoreUpdateInfoParam;
 import com.example.demo.dao.ProductMapper;
 import com.example.demo.dao.StoreMapper;
@@ -22,22 +25,22 @@ public class StoreServiceImpl implements StoreService {
     ProductMapper productMapper;
 
     @Override
-    public ServiceResultEnum addStore(Store store) {
+    public ServiceResultEnum addStore(StoreAddParam storeAddParam) {
         return null;
     }
 
     @Override
-    public ServiceResultEnum updateInfo(StoreUpdateInfoParam storeUpdateInfoParam, String storeId) {
+    public ServiceResultEnum updateInfo(StoreUpdateInfoParam storeUpdateInfoParam) {
         return null;
     }
 
     @Override
-    public ServiceResultEnum updateProduct(Product product, String storeId) {
+    public ServiceResultEnum updateProduct(ProductUpdateParam productUpdateParam) {
         return null;
     }
 
     @Override
-    public ServiceResultEnum addProduct(Product product, String storeId) {
+    public ServiceResultEnum addProduct(ProductAddParam productAddParam) {
         return null;
     }
 

@@ -19,4 +19,6 @@ public class Store {
     private String ownerID;
     private Timestamp createdAt;
     private Timestamp updateAt;
+    private int rating;
+    private int visited;
 }

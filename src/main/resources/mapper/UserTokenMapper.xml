@@ -21,6 +21,13 @@
         where user_id=#{userId}
     </select>
 
+    <select id="selectByUserId" resultMap="user_token_result" parameterType="String">
+        select
+        <include refid="base_column_list"/>
+        from user_tokens
+        where username=#{username}
+    </select>
+
     <select id="selectByToken" resultMap="user_token_result">
         select
         <include refid="base_column_list"/>

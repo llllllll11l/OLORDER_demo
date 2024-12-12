@@ -5,7 +5,7 @@
     <resultMap type="com.example.demo.entity.Store" id="store_result">
         <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
         <result property="storeName" column="store_name" jdbcType="VARCHAR"/>
-        <result property="storeDescription" column="store_description" jdbcType="VARCHAR"/>
+        <result property="storeDescription" column="store_description" jdbcType="TEXT"/>
         <result property="storeAddress" column="store_address" jdbcType="VARCHAR"/>
         <result property="contactNumber" column="contact_number" jdbcType="VARCHAR"/>
         <result property="storeType" column="store_type" jdbcType="VARCHAR"/>
@@ -90,5 +90,47 @@
         select
         <include refid="base_column_list"/>
         from stores
+    </select>
+
+    <select id="findStoreListBySearch" parameterType="Map" resultMap="store_result">
+        select
+        <include refid="base_column_list"/>
+        from stores
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (store_name like concat('%',#{keyword},'%') or store_description like concat('%',#{keyword},'%'))
+            </if>
+            <if test="storeType!=null">
+                and store_type=#{storeType}
+            </if>
+        </where>
+        <if test="orderBy!=null and orderBy!=''">
+            <choose>
+                <when test="orderBy=='VISITED'">
+                    order by visited desc
+                </when>
+                <when test="orderBy=='rating'">
+                    order by rating desc
+                </when>
+                <otherwise>
+                    order by store_name
+                </otherwise>
+            </choose>
+        </if>
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getNumOfStoresBySearch" parameterType="Map" resultMap="int">
+        select count(*) from stores
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (store_name like concat('%',#{keyword},'%') or store_description like concat('%',#{keyword},'%'))
+            </if>
+            <if test="storeType!=null">
+                and store_type=#{storeType}
+            </if>
+        </where>
     </select>
 </mapper>

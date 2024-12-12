@@ -8,7 +8,9 @@ import com.example.demo.controller.Param.UserLoginParam;
 import com.example.demo.controller.Param.UserRegisterParam;
 import com.example.demo.controller.Param.UserUpdateInfoParam;
 import com.example.demo.controller.vo.UserVO;
+import com.example.demo.dao.UserTokenMapper;
 import com.example.demo.entity.User;
+import com.example.demo.entity.UserToken;
 import com.example.demo.service.UserService;
 import com.example.demo.dao.UserMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,17 +34,19 @@ import static com.example.demo.Enums.ServiceResultEnum.*;
 public class UserController {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    UserTokenMapper userTokenMapper;
     @Resource
     private UserService userService;
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/user/login")
     @Operation(summary = "登陆接口", description = "用户登陆")
-    public Result login(@RequestBody @Valid UserLoginParam userLoginParam){
+    public Result<String> login(@RequestBody @Parameter(name="登陆信息") @Valid UserLoginParam userLoginParam){
         ServiceResultEnum serviceResult=userService.login(userLoginParam.getUsername(),userLoginParam.getPasswordHash());
         logger.info("login api, username={}, loginResult={}",userLoginParam.getUsername(), serviceResult.getResult());
         if(serviceResult==ServiceResultEnum.LOGIN_SUCCESSED_NEW_TOKEN||serviceResult==ServiceResultEnum.LOGIN_SUCCESSED_UPDATE_TOKEN){
-            Result result= ResultGenerator.genSuccessResult();
+            Result<String> result= ResultGenerator.genSuccessResult();
             result.setData(serviceResult.getResult());
             return result;
         }
@@ -51,15 +55,21 @@ public class UserController {
 
     @GetMapping("/user/findAll")
     @Operation(summary="查找所有用户接口", description = "Show me EVERYTHING!!!")
-    public List<User> findAll(){
-        return userMapper.findAllUsers();
+    public Result<List<User>> findAll(){
+        return ResultGenerator.genSuccessResult(userMapper.findAllUsers());
+    }
+
+    @GetMapping("/user/findAll")
+    @Operation(summary = "查找用户的token",description = "")
+    public Result<UserToken> getTokenByUsername(@RequestBody String username){
+        return ResultGenerator.genSuccessResult(userTokenMapper.selectByUsername(username));
     }
 
     @GetMapping("/user/info")
     @Operation(summary="获取用户信息", description = "")
-    public Result getUserDetail(@TokenRequired User user){
+    public Result<UserVO> getUserDetail(@TokenRequired User user){
         if (user == null) {
-            //
+            return null;
         }
         UserVO userVO=new UserVO();
         BeanUtils.copyProperties(user, userVO);
@@ -78,7 +88,7 @@ public class UserController {
     }
  */
     @PutMapping("/user/updinfo")
-    @Operation(summary="update", description = "")
+    @Operation(summary="修改用户信息", description = "")
     public Result updateInfo(@RequestBody UserUpdateInfoParam userUpdateInfoParam,
                              @TokenRequired User user){
         /*

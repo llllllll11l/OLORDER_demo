@@ -3,8 +3,10 @@ package com.example.demo.Util;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Result<T> {
+public class Result<T> implements Serializable {
     @Schema(description = "返回数据")
     private T data;
     @Schema(description = "返回码")

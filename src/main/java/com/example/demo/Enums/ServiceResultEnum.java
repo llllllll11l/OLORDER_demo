@@ -13,7 +13,10 @@ public enum ServiceResultEnum {
     USER_NOT_LOGGED_IN("用户未登陆"),
     UPDATE_FAILED("上传失败"),
     LOGOUT_FAILED("登出失败"),
-    REGISTER_FAILED("注册失败");
+    REGISTER_FAILED("注册失败"),
+    USER_TYPE_ERROR("用户类型不支持该操作"),
+    NO_PERMISSION_TO_STORE("没有权限操作该店铺"),
+    ADD_STORE_FAILED("添加店铺失败");
 
     private String result;
     ServiceResultEnum(String result) {
