@@ -122,7 +122,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByUser" parameterType="com.example.demo.entity.User">
+    <update id="updateByUserId" parameterType="com.example.demo.entity.User">
         update users
         <set>
             <if test="username != null">

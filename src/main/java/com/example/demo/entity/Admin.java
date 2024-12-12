@@ -2,13 +2,12 @@ package com.example.demo.entity;
 
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
-public class Admins {
+public class Admin {
     private String adminID;
     private String adminName;
     private String passwordHash;

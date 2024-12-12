@@ -9,7 +9,7 @@ public interface UserMapper {
     User selectByUsernameAndPwd(@Param("username") String username,
                                        @Param("passwordHash") String passwordHash);
     User selectByUserId(String userId);
-    int updateByUser(User user);
+    int updateByUserId(User user);
     int insertSelective(User user);
     List<User> findAllUsers();
 }

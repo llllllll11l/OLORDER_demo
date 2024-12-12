@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import static com.example.demo.Util.Util.generateToken;
+import static com.example.demo.Util.Util.hashPassword;
 import static com.example.demo.entity.UserStatus.*;
 
 @Service
@@ -80,12 +81,13 @@ public class UserServiceImpl implements UserService {
         if(userUpdateInfo.getProfilePicture()!=null){
             user.setProfilePicture(userUpdateInfo.getProfilePicture());
         }
-        if (!Util.hashPassword("").equals(userUpdateInfo.getPasswordHash())){
-            user.setPasswordHash(userUpdateInfo.getPasswordHash());
+        if (userUpdateInfo.getPasswordHash()!=null){
+            String pwdHash=hashPassword(userUpdateInfo.getPasswordHash());
+            user.setPasswordHash(pwdHash);
             Timestamp now=new Timestamp(System.currentTimeMillis());
             user.setLastPasswordChange(now);
         }
-        if (userMapper.updateByUser(user)>0) {
+        if (userMapper.updateByUserId(user)>0) {
             return ServiceResultEnum.SUCCESS;
         }
         else {
