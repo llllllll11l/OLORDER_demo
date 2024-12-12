@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.OrderItemMapper">
+    <resultMap type="com.example.demo.entity.OrderItem" id="order_item_result">
+        <result property="orderItemsId" column="order_item_id" jdbcType="VARCHAR"/>
+        <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+        <result property="productId" column="product_id" jdbcType="VARCHAR"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        order_item_id, order_id, product_id, quantity, price, total_price
+    </sql>
+
+    <select id="selectByOrderId" resultMap="order_item_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM order_items
+        WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.OrderItem">
+        INSERT INTO order_items
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderItemsId != null">
+            order_item_id,
+            </if>
+            <if test="orderId != null">
+            order_id,
+            </if>
+            <if test="productId != null">
+            product_id,
+            </if>
+            <if test="quantity >= 0">
+            quantity,
+            </if>
+            <if test="price != null">
+            price,
+            </if>
+            <if test="totalPrice != null">
+            total_price,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="orderItemsId != null">
+            #{orderItemsId},
+            </if>
+            <if test="orderId != null">
+            #{orderId},
+            </if>
+            <if test="productId != null">
+            #{productId},
+            </if>
+            <if test="quantity >= 0">
+            #{quantity},
+            </if>
+            <if test="price != null">
+            #{price},
+            </if>
+            <if test="totalPrice != null">
+            #{totalPrice},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByOrderItemId" parameterType="java.lang.String">
+        DELETE FROM order_items WHERE order_item_id = #{orderItemId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.OrderMapper">
+    <resultMap type="com.example.demo.entity.Orders" id="orders_result">
+        <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+        <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
+        <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
+        <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
+        <result property="orderStatus" column="order_status" jdbcType="VARCHAR"/>
+        <result property="deliveryAddress" column="delivery_address" jdbcType="VARCHAR"/>
+        <result property="orderDate" column="order_date" jdbcType="TIMESTAMP"/>
+        <result property="createAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updateAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <sql id="base_column_list">
+        order_id, customer_id, store_id, total_amount, order_status, delivery_address, order_date, created_at, updated_at
+    </sql>
+
+
+    <select id="selectByOrderId" resultMap="orders_result">
+        select
+        <include refid="base_column_list"/>
+        from orders
+        where order_id = #{orderId}
+    </select>
+
+
+    <select id="selectByUserId" resultMap="orders_result">
+        select
+        <include refid="base_column_list"/>
+        from orders
+        where customer_id = #{userId}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Orders">
+        insert into orders
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+            order_id,
+            </if>
+            <if test="customerId != null">
+            customer_id,
+            </if>
+            <if test="storeId != null">
+            store_id,
+            </if>
+            <if test="totalAmount != null">
+            total_amount,
+            </if>
+            <if test="orderStatus != null">
+            order_status,
+            </if>
+            <if test="deliveryAddress != null">
+            delivery_address,
+            </if>
+            <if test="orderDate != null">
+            order_date,
+            </if>
+            <if test="createAt != null">
+            created_at,
+            </if>
+            <if test="updateAt != null">
+            updated_at,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+            #{orderId},
+            </if>
+            <if test="customerId != null">
+            #{customerId},
+            </if>
+            <if test="storeId != null">
+            #{storeId},
+            </if>
+            <if test="totalAmount != null">
+            #{totalAmount},
+            </if>
+            <if test="orderStatus != null">
+            #{orderStatus},
+            </if>
+            <if test="deliveryAddress != null">
+            #{deliveryAddress},
+            </if>
+            <if test="orderDate != null">
+            #{orderDate},
+            </if>
+            <if test="createAt != null">
+            #{createAt},
+            </if>
+            <if test="updateAt != null">
+            #{updateAt},
+            </if>
+        </trim>
+    </insert>
+
+
+    <delete id="deleteByOrderId" parameterType="String">
+        delete from orders
+        where order_id = #{orderId}
+    </delete>
+
+
+    <update id="updateByOrderId" parameterType="com.example.demo.entity.Orders">
+        update orders
+        <set>
+            <if test="customerId != null">
+            customer_id = #{customerId},
+            </if>
+            <if test="storeId != null">
+            store_id = #{storeId},
+            </if>
+            <if test="totalAmount != null">
+            total_amount = #{totalAmount},
+            </if>
+            <if test="orderStatus != null">
+            order_status = #{orderStatus},
+            </if>
+            <if test="deliveryAddress != null">
+            delivery_address = #{deliveryAddress},
+            </if>
+            <if test="orderDate != null">
+            order_date = #{orderDate},
+            </if>
+            <if test="createAt != null">
+            created_at = #{createAt},
+            </if>
+            <if test="updateAt != null">
+            updated_at = #{updateAt},
+            </if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+
+</mapper>

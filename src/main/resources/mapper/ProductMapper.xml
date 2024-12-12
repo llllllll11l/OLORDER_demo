@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.ProductMapper">
+    <resultMap type="com.example.demo.entity.Product" id="product_result">
+        <result property="productID" column="product_id" jdbcType="VARCHAR"/>
+        <result property="productName" column="product_name" jdbcType="VARCHAR"/>
+        <result property="productDescription" column="product_description" jdbcType="VARCHAR"/>
+        <result property="productCategory" column="product_category" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="stockQuantity" column="stock_quantity" jdbcType="INTEGER"/>
+        <result property="productStatus" column="product_status" jdbcType="VARCHAR"/>
+        <result property="productImage" column="product_image" jdbcType="VARCHAR"/>
+        <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+        <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
+        <result property="storeID" column="store_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        product_id, product_name, product_description, product_category, price, stock_quantity, product_status, product_image, create_date, update_date, store_id
+    </sql>
+
+    <select id="selectByProductId" resultMap="product_result">
+        select
+        <include refid="base_column_list"/>
+        from products
+        where product_id = #{productId}
+    </select>
+
+    <select id="selectByStoreId" resultMap="product_result">
+        select
+        <include refid="base_column_list"/>
+        from products
+        where store_id = #{storeId}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Product">
+        insert into products
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productID != null">product_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="productDescription != null">product_description,</if>
+            <if test="productCategory != null">product_category,</if>
+            <if test="price != null">price,</if>
+            <if test="stockQuantity >= 0">stock_quantity,</if>
+            <if test="productStatus != null">product_status,</if>
+            <if test="productImage != null">product_image,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="updateDate != null">update_date,</if>
+            <if test="storeID != null">store_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productID != null">#{productID},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="productDescription != null">#{productDescription},</if>
+            <if test="productCategory != null">#{productCategory},</if>
+            <if test="price != null">#{price},</if>
+            <if test="stockQuantity >= 0">#{stockQuantity},</if>
+            <if test="productStatus != null">#{productStatus},</if>
+            <if test="productImage != null">#{productImage},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="updateDate != null">#{updateDate},</if>
+            <if test="storeID != null">#{storeID},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByProductId" parameterType="String">
+        delete from products
+        where product_id = #{productId}
+    </delete>
+
+    <update id="updateByProductId" parameterType="com.example.demo.entity.Product">
+        update products
+        <set>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="productDescription != null">product_description = #{productDescription},</if>
+            <if test="productCategory != null">product_category = #{productCategory},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="stockQuantity >= 0">stock_quantity = #{stockQuantity},</if>
+            <if test="productStatus != null">product_status = #{productStatus},</if>
+            <if test="productImage != null">product_image = #{productImage},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="storeID != null">store_id = #{storeID},</if>
+        </set>
+        where product_id = #{productID}
+    </update>
+
+</mapper>

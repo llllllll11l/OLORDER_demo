@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.StoreMapper">
+    <resultMap type="com.example.demo.entity.Store" id="store_result">
+        <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
+        <result property="storeName" column="store_name" jdbcType="VARCHAR"/>
+        <result property="storeDescription" column="store_description" jdbcType="VARCHAR"/>
+        <result property="storeAddress" column="store_address" jdbcType="VARCHAR"/>
+        <result property="contactNumber" column="contact_number" jdbcType="VARCHAR"/>
+        <result property="storeType" column="store_type" jdbcType="VARCHAR"/>
+        <result property="storeStatus" column="store_status" jdbcType="VARCHAR"/>
+        <result property="verificationDocs" column="verification_docs" jdbcType="VARCHAR"/>
+        <result property="ownerID" column="owner_id" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updateAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        store_id, store_name, store_description, store_address, contact_number, store_type, store_status, verification_docs, owner_id, created_at, updated_at
+    </sql>
+
+    <select id="selectByUserId" resultMap="store_result">
+        select
+        <include refid="base_column_list"/>
+        from stores
+        where owner_id = #{userId}
+    </select>
+
+    <select id="selectByStoreId" resultMap="store_result">
+        select
+        <include refid="base_column_list"/>
+        from stores
+        where store_id = #{storeId}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Store">
+        insert into stores
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">store_id,</if>
+            <if test="storeName != null">store_name,</if>
+            <if test="storeDescription != null">store_description,</if>
+            <if test="storeAddress != null">store_address,</if>
+            <if test="contactNumber != null">contact_number,</if>
+            <if test="storeType != null">store_type,</if>
+            <if test="storeStatus != null">store_status,</if>
+            <if test="verificationDocs != null">verification_docs,</if>
+            <if test="ownerID != null">owner_id,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="updateAt != null">update_at,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storeId != null">#{storeId},</if>
+            <if test="storeName != null">#{storeName},</if>
+            <if test="storeDescription != null">#{storeDescription},</if>
+            <if test="storeAddress != null">#{storeAddress},</if>
+            <if test="contactNumber != null">#{contactNumber},</if>
+            <if test="storeType != null">#{storeType},</if>
+            <if test="storeStatus != null">#{storeStatus},</if>
+            <if test="verificationDocs != null">#{verificationDocs},</if>
+            <if test="ownerID != null">#{ownerID},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+            <if test="updateAt != null">#{updateAt},</if>
+        </trim>
+    </insert>
+
+    <update id="updateByStoreId" parameterType="com.example.demo.entity.Store">
+        update stores
+        <set>
+            <if test="storeName != null">store_name = #{storeName},</if>
+            <if test="storeDescription != null">store_description = #{storeDescription},</if>
+            <if test="storeAddress != null">store_address = #{storeAddress},</if>
+            <if test="contactNumber != null">contact_number = #{contactNumber},</if>
+            <if test="storeType != null">store_type = #{storeType},</if>
+            <if test="storeStatus != null">store_status = #{storeStatus},</if>
+            <if test="verificationDocs != null">verification_docs = #{verificationDocs},</if>
+            <if test="ownerID != null">owner_id = #{ownerID},</if>
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+            <if test="updateAt != null">update_at = #{updateAt},</if>
+        </set>
+        where store_id = #{storeId}
+    </update>
+
+    <delete id="deleteByStoreId" parameterType="String">
+        delete from stores
+        where store_id = #{storeId}
+    </delete>
+
+    <select id="findAllStores" resultMap="store_result">
+        select
+        <include refid="base_column_list"/>
+        from stores
+    </select>
+</mapper>

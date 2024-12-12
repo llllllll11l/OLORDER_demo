@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.AdminMapper">
+    <resultMap type="com.example.demo.entity.Admin" id="admin_result">
+        <result property="adminID" column="admin_id" jdbcType="VARCHAR"/>
+        <result property="adminName" column="admin_name" jdbcType="VARCHAR"/>
+        <result property="passwordHash" column="password_hash" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="profilePicture" column="profile_picture" jdbcType="VARCHAR"/>
+        <result property="registrationDate" column="registration_date" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginDate" column="last_login_date" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="lastPasswordChange" column="last_password_change" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="base_column_list">
+        admin_id, admin_name, password_hash, email, phone_number, profile_picture, registration_date, last_login_date, status, last_password_change
+    </sql>
+
+    <select id="selectByAdminNameAndPwd" resultMap="admin_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM admins
+        WHERE admin_name = #{adminName} AND password_hash = #{passwordHash}
+    </select>
+
+    <select id="selectByAdminId" resultMap="admin_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM admins
+        WHERE admin_id = #{adminID}
+    </select>
+
+    <select id="findAll" resultMap="admin_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM admins
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Admin">
+        INSERT INTO admins
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminName != null">
+                admin_name,
+            </if>
+            <if test="passwordHash != null">
+                password_hash,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phoneNumber != null">
+                phone_number,
+            </if>
+            <if test="profilePicture != null">
+                profile_picture,
+            </if>
+            <if test="registrationDate != null">
+                registration_date,
+            </if>
+            <if test="lastLoginDate != null">
+                last_login_date,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="lastPasswordChange != null">
+                last_password_change,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="adminName != null">
+                #{adminName},
+            </if>
+            <if test="passwordHash != null">
+                #{passwordHash},
+            </if>
+            <if test="email != null">
+                #{email},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber},
+            </if>
+            <if test="profilePicture != null">
+                #{profilePicture},
+            </if>
+            <if test="registrationDate != null">
+                #{registrationDate},
+            </if>
+            <if test="lastLoginDate != null">
+                #{lastLoginDate},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="lastPasswordChange != null">
+                #{lastPasswordChange},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByAdminId" parameterType="com.example.demo.entity.Admin">
+        UPDATE admins
+        <set>
+            <if test="adminName != null">
+                admin_name = #{adminName,jdbcType=VARCHAR},
+            </if>
+            <if test="passwordHash != null">
+                password_hash = #{passwordHash,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                phone_number = #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="profilePicture != null">
+                profile_picture = #{profilePicture,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="lastPasswordChange != null">
+                last_password_change = #{lastPasswordChange,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE admin_id = #{adminID,jdbcType=VARCHAR}
+    </update>
+</mapper>
