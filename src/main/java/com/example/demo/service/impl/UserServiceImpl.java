@@ -103,7 +103,6 @@ public class UserServiceImpl implements UserService {
             return ServiceResultEnum.LOGOUT_FAILED;
         }
     }
-
     @Override
     public ServiceResultEnum register(String username, String password, UserType userType){
         User reguser=new User();
