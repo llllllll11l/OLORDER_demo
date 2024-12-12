@@ -62,7 +62,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public ServiceResultEnum updateInfo(UserUpdateInfoParam userUpdateInfo, String userId) {
         User user = userMapper.selectByUserId(userId);
-        System.out.println("--------"+userUpdateInfo.getEmail()+userUpdateInfo.getPasswordHash());
         if (user == null) {
             CustomException.fail(ServiceResultEnum.USER_NOT_FOUND.getResult());
             return ServiceResultEnum.UPDATE_FAILED;

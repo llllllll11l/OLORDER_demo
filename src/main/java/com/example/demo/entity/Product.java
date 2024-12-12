@@ -1,15 +1,11 @@
 package com.example.demo.entity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.util.Date;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Timestamp;
+import lombok.Data;
 
 @Data
-public class Porducts {
+public class Product {
     private String productID;
     private String productName;
     private String productDescription;

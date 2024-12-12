@@ -5,16 +5,15 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class StoreReviews {
+public class ProductReview {
     private String reviewID;
     private String orderId;
-    private String storeId;
+    private String productId;
     private String customerID;
     private int rating;
     private String comment;
     private Timestamp reviewDate;
-    private StoreReviewStatus status;
+    private ProductReviewStatus status;
     private String response;
     private Timestamp responseDate;
-
 }
