@@ -6,7 +6,7 @@
         <result property="orderItemId" column="order_item_id" jdbcType="VARCHAR"/>
         <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
         <result property="productId" column="product_id" jdbcType="VARCHAR"/>
-        <result property="quantity" column="quantity" jdbcType="INT"/>
+        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
         <result property="price" column="price" jdbcType="DECIMAL"/>
         <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
     </resultMap>
@@ -39,7 +39,7 @@
     <insert id="insertSelective" parameterType="com.example.demo.entity.OrderItem">
         INSERT INTO order_items
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderItemsId != null">
+            <if test="orderItemId != null">
             order_item_id,
             </if>
             <if test="orderId != null">
@@ -59,8 +59,8 @@
             </if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
-            <if test="orderItemsId != null">
-            #{orderItemsId},
+            <if test="orderItemId != null">
+            #{orderItemId},
             </if>
             <if test="orderId != null">
             #{orderId},

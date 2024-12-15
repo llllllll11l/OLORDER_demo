@@ -9,12 +9,14 @@ import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product;
 import com.example.demo.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemMapper orderItemMapper;

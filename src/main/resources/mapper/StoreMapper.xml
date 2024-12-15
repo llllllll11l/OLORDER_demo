@@ -5,7 +5,7 @@
     <resultMap type="com.example.demo.entity.Store" id="store_result">
         <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
         <result property="storeName" column="store_name" jdbcType="VARCHAR"/>
-        <result property="storeDescription" column="store_description" jdbcType="TEXT"/>
+        <result property="storeDescription" column="store_description" jdbcType="VARCHAR"/>
         <result property="storeAddress" column="store_address" jdbcType="VARCHAR"/>
         <result property="contactNumber" column="contact_number" jdbcType="VARCHAR"/>
         <result property="storeType" column="store_type" jdbcType="VARCHAR"/>

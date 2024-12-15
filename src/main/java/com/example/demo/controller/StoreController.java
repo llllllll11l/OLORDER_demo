@@ -10,6 +10,8 @@ import com.example.demo.controller.Param.ProductAddParam;
 import com.example.demo.controller.Param.ProductUpdateParam;
 import com.example.demo.controller.Param.StoreAddParam;
 import com.example.demo.controller.Param.StoreUpdateInfoParam;
+import com.example.demo.controller.vo.ProductListVO;
+import com.example.demo.controller.vo.StoreListVO;
 import com.example.demo.controller.vo.StoreVO;
 import com.example.demo.dao.ProductMapper;
 import com.example.demo.dao.StoreMapper;
@@ -27,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.Enums.ServiceResultEnum.*;
@@ -141,34 +144,55 @@ public class StoreController {
 
     @GetMapping("/store/owner/{userId}")
     @Operation(summary = "查找用户名下店铺",description = "")
-    public Result<List<Store>> getStoreByUserId(@PathVariable("userId") String userId,
-                                                @TokenRequired User user){
-        List<Store> list=storeMapper.selectByUserId(userId);
-        if(list!=null) {
-            return ResultGenerator.genSuccessResult(list);
+    public Result<List<StoreListVO>> getStoreByUserId(@PathVariable("userId") String userId,
+                                                      @TokenRequired User user){
+        List<Store> storeList=storeMapper.selectByUserId(userId);
+        if(storeList!=null){
+            List<StoreListVO> storeListVOList=new ArrayList<>();
+            for(Store i:storeList){
+                StoreListVO t=new StoreListVO();
+                BeanUtils.copyProperties(i,t);
+                storeListVOList.add(t);
+            }
+            return ResultGenerator.genSuccessResult(storeListVOList);
         }
         return ResultGenerator.genFailResult("FAILED");
     }
 
     @GetMapping("/store/{storeId}/products")
     @Operation(summary = "查找店铺里的商品",description = "")
-    public Result<List<Product>> getProductsByStoreId(@PathVariable("storeId") String storeId,
-                                                      @TokenRequired User user){
+    public Result<List<ProductListVO>> getProductsByStoreId(@PathVariable("storeId") String storeId,
+                                                            @TokenRequired User user){
         List<Product> list=productMapper.selectByStoreId(storeId);
         if(list!=null){
-            return ResultGenerator.genSuccessResult(list);
+            List<ProductListVO> productListVOList =new ArrayList<ProductListVO>();
+            for(Product i:list){
+                ProductListVO t=new ProductListVO();
+                BeanUtils.copyProperties(i,t);
+                productListVOList.add(t);
+            }
+            return ResultGenerator.genSuccessResult(productListVOList);
         }
         return ResultGenerator.genFailResult("FAILED");
     }
 
     @GetMapping("/store/list")
     @Operation(summary = "根据搜索分页查看店铺列表",description = "")
-    public Result<List<Store>> getStoreListBySearch(@RequestBody PageQuery query,
+    public Result<List<StoreListVO>> getStoreListBySearch(@RequestBody PageQuery query,
                                                     @TokenRequired User user){
         if(user==null){
             return ResultGenerator.genFailResult("USER NOT FOUND");
         }
         List<Store> storeList=storeMapper.findStoreListBySearch(query);
-        return ResultGenerator.genSuccessResult(storeList);
+        if(storeList!=null){
+            List<StoreListVO> storeListVOList=new ArrayList<>();
+            for(Store i:storeList){
+                StoreListVO t=new StoreListVO();
+                BeanUtils.copyProperties(i,t);
+                storeListVOList.add(t);
+            }
+            return ResultGenerator.genSuccessResult(storeListVOList);
+        }
+        return ResultGenerator.genFailResult("FAILED");
     }
 }

@@ -16,10 +16,4 @@ public class StoreVO implements Serializable {
     private StoreType storeType;
     private double rating;
     private int visited;
-    /*
-    @Parameter(description = "近期平均评分")
-    private double rating;
-    @Parameter(description = "近期访问量")
-    private int visited;
-     */
 }

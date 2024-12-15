@@ -141,5 +141,19 @@ public class OrderController {
         return ResultGenerator.genSuccessResult(result);
     }
 
-
+    @PutMapping("/store/{storeId}/products/{productId}/cart/remove")
+    @Operation(summary = "从购物车移除",description = "")
+    public Result<String> removeFromCart(@PathVariable("storeId")String storeId,
+                                         @PathVariable("productId")String productId,
+                                         @TokenRequired User user){
+        Store store=storeMapper.selectByStoreId(storeId);
+        if(store==null){
+            return ResultGenerator.genFailResult("STORE NOT FOUND");
+        }
+        Product product=productMapper.selectByProductId(productId);
+        if(product==null){
+            return ResultGenerator.genFailResult("PRODUCT NOT FOUND");
+        }
+        return null;
+    }
 }

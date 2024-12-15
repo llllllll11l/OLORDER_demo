@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS stores (
     store_status ENUM('PENDING', 'APPROVED', 'DISABLED') NOT NULL DEFAULT 'PENDING',  -- 店铺状态
     verification_docs VARCHAR(255),  -- 店铺验证文档
     owner_id VARCHAR(255) NOT NULL,  -- 店铺所有者ID
-    visited INT NOT NULL DEFAULT 0, --最近访问量
-    rating DOUBLE, --平均评分
+    visited INT NOT NULL DEFAULT 0, -- 最近访问量
+    rating DOUBLE, -- 平均评分
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  -- 创建时间
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 更新时间
     FOREIGN KEY (owner_id) REFERENCES users(user_id),  -- 外键，关联用户表
