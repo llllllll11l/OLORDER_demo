@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/user/findTokenByUsername")
-    @Operation(summary = "查找用户的token",description = "")
+    @Operation(summary = "查找用户的token",description = "by username")
     public Result<UserToken> getTokenByUsername(@RequestBody String username){
         return ResultGenerator.genSuccessResult(userTokenMapper.selectByUsername(username));
     }
