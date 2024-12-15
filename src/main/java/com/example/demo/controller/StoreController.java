@@ -9,6 +9,7 @@ import com.example.demo.controller.Param.ProductAddParam;
 import com.example.demo.controller.Param.ProductUpdateParam;
 import com.example.demo.controller.Param.StoreAddParam;
 import com.example.demo.controller.Param.StoreUpdateInfoParam;
+import com.example.demo.controller.vo.StoreVO;
 import com.example.demo.dao.ProductMapper;
 import com.example.demo.dao.StoreMapper;
 import com.example.demo.dao.UserMapper;
@@ -21,7 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -124,6 +125,18 @@ public class StoreController {
         else{
             return ResultGenerator.genFailResult(serviceResult.getResult());
         }
+    }
+
+    @GetMapping("/store/{storeId}/detail")
+    @Operation(summary = "(客户或店主预览)查看店铺信息接口",description = "")
+    public Result<StoreVO> getStoreDetail(@PathVariable("storeId")String storeId, @TokenRequired User user){
+        Store store=storeMapper.selectByStoreId(storeId);
+        if(store==null||user==null){
+            return ResultGenerator.genSuccessResult("FAILED");
+        }
+        StoreVO storeVO=new StoreVO();
+        BeanUtils.copyProperties(store,storeVO);
+        return ResultGenerator.genSuccessResult(storeVO);
     }
 
     @GetMapping("/store/owner/{userId}")
