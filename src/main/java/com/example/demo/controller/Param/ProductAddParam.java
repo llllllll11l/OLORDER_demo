@@ -18,7 +18,6 @@ public class ProductAddParam implements Serializable {
     private BigDecimal price;
     private int stockQuantity;
     private String productImage;
-    private String storeId;
 
     public ProductAddParam(){}
 }

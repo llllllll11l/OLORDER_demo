@@ -15,7 +15,6 @@ public class ProductUpdateParam implements Serializable {
     private int stockQuantity;
     private ProductStatus productStatus;
     private String productImage;
-    private String storeId;
 
     public ProductUpdateParam(){}
 }

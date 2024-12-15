@@ -16,7 +16,6 @@ public class StoreAddParam implements Serializable {
     @NotEmpty(message = "联系电话不能为空")
     private String contactNumber;
     private StoreType storeType;
-    private String userId;
 
     public StoreAddParam(){}
 }

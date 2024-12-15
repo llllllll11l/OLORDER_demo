@@ -7,7 +7,7 @@ import com.example.demo.entity.Store;
 import java.util.List;
 
 public interface StoreMapper {
-    Store selectByUserId(String userId);
+    List<Store> selectByUserId(String userId);
     Store selectByStoreId(String storeId);
     int insertSelective(Store store);
     int updateByStoreId(Store store);

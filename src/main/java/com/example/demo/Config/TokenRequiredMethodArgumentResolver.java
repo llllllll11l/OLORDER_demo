@@ -41,7 +41,7 @@ public class TokenRequiredMethodArgumentResolver implements HandlerMethodArgumen
                 }
                 user=userMapper.selectByUserId(userToken.getUserId());
                 if(user==null){
-                    CustomException.fail(ServiceResultEnum.USER_NULL_ERROR.getResult());
+                    CustomException.fail(ServiceResultEnum.USER_NOT_FOUND.getResult());
                 }
                 if(user.getStatus()== UserStatus.SUSPENDED||user.getStatus()==UserStatus.DISABLED){
                     CustomException.fail(ServiceResultEnum.USER_DISABLED.getResult());

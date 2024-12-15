@@ -84,8 +84,7 @@ public class UserServiceImpl implements UserService {
         if (userUpdateInfo.getPasswordHash()!=null){
             String pwdHash=hashPassword(userUpdateInfo.getPasswordHash());
             user.setPasswordHash(pwdHash);
-            Timestamp now=new Timestamp(System.currentTimeMillis());
-            user.setLastPasswordChange(now);
+            user.setLastPasswordChange(new Timestamp(System.currentTimeMillis()));
         }
         if (userMapper.updateByUserId(user)>0) {
             return ServiceResultEnum.SUCCESS;

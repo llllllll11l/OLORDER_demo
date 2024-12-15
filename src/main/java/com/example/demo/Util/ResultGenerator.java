@@ -22,10 +22,10 @@ public class ResultGenerator {
         return result;
     }
 
-    public static <T> Result<T> genSuccessResult(T data){
-        Result<T> result= new Result<>();
+    public static <T>Result<T> genSuccessResult(T data) {
+        Result<T> result = new Result<>();
         result.setResultCode(RESULT_CODE_SUCCESS);
-        result.setMessage((DEFAULT_SUCCESS_MESSAGE));
+        result.setMessage(DEFAULT_SUCCESS_MESSAGE);
         result.setData(data);
         return result;
     }
