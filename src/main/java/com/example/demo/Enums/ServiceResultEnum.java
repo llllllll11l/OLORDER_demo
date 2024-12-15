@@ -19,7 +19,8 @@ public enum ServiceResultEnum {
     USER_TYPE_ERROR("用户类型不支持该操作"),
     NO_PERMISSION_TO_STORE("没有权限操作该店铺"),
     ADD_STORE_FAILED("添加店铺失败"),
-    ADD_PRODUCT_FAILED("添加商品失败");
+    ADD_PRODUCT_FAILED("添加商品失败"),
+    DELETE_STORE_FAILED("删除店铺失败");
 
     private String result;
     ServiceResultEnum(String result) {

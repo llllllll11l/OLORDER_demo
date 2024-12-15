@@ -13,7 +13,7 @@ public interface StoreService {
      * @param storeAddParam
      * @return
      */
-    ServiceResultEnum addStore(StoreAddParam storeAddParam,String userId);
+    String addStore(StoreAddParam storeAddParam,String userId);
 
     /**
      * 修改店铺信息
@@ -44,7 +44,7 @@ public interface StoreService {
      * @param productAddParam
      * @return
      */
-    ServiceResultEnum addProduct(ProductAddParam productAddParam, String storeId);
+    String addProduct(ProductAddParam productAddParam, String storeId);
 
     /**
      * delete product by id

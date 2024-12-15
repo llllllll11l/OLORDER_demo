@@ -30,7 +30,7 @@ public class StoreServiceImpl implements StoreService {
     ProductMapper productMapper;
 
     @Override
-    public ServiceResultEnum addStore(StoreAddParam storeAddParam,String userId) {
+    public String addStore(StoreAddParam storeAddParam,String userId) {
         Store store=new Store();
         store.setStoreStatus(StoreStatus.PENDING);
         store.setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -39,10 +39,10 @@ public class StoreServiceImpl implements StoreService {
         store.setOwnerID(userId);
         BeanUtils.copyProperties(storeAddParam,store);
         if(storeMapper.insertSelective(store)>0){
-            return ServiceResultEnum.SUCCESS;
+            return store.getStoreId();
         }
         else{
-            return ServiceResultEnum.ADD_STORE_FAILED;
+            return "ADD_STORE_FAILED";
         }
     }
 
@@ -64,7 +64,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public ServiceResultEnum delStore(String storeId) {
-        return null;
+        if(storeMapper.deleteByStoreId(storeId)>0)
+            return ServiceResultEnum.SUCCESS;
+        return ServiceResultEnum.DELETE_STORE_FAILED;
     }
 
     @Override
@@ -90,17 +92,17 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public ServiceResultEnum addProduct(ProductAddParam productAddParam,String storeId) {
+    public String addProduct(ProductAddParam productAddParam,String storeId) {
         Product product=new Product();
         product.setProductID(UUID.randomUUID().toString());
         product.setCreateDate(new Timestamp(System.currentTimeMillis()));
         product.setUpdateDate(new Timestamp(System.currentTimeMillis()));
         BeanUtils.copyProperties(productAddParam,product);
         if(productMapper.insertSelective(product)>0){
-            return ServiceResultEnum.SUCCESS;
+            return product.getProductID();
         }
         else{
-            return ServiceResultEnum.ADD_PRODUCT_FAILED;
+            return "ADD_PRODUCT_FAILED";
         }
     }
 

@@ -12,7 +12,7 @@ public interface UserService {
      * @param passwordHash
      * @return
      */
-    ServiceResultEnum login(String username, String passwordHash);
+    String login(String username, String passwordHash);
 
     /**
      * 修改
@@ -39,5 +39,5 @@ public interface UserService {
      * @param userType
      * @return
      */
-    ServiceResultEnum register(String username, String passwordHash, UserType userType);
+    String register(String username, String passwordHash, UserType userType);
 }

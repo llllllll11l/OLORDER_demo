@@ -3,10 +3,10 @@
 
 <mapper namespace="com.example.demo.dao.OrderItemMapper">
     <resultMap type="com.example.demo.entity.OrderItem" id="order_item_result">
-        <result property="orderItemsId" column="order_item_id" jdbcType="VARCHAR"/>
+        <result property="orderItemId" column="order_item_id" jdbcType="VARCHAR"/>
         <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
         <result property="productId" column="product_id" jdbcType="VARCHAR"/>
-        <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+        <result property="quantity" column="quantity" jdbcType="INT"/>
         <result property="price" column="price" jdbcType="DECIMAL"/>
         <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
     </resultMap>
@@ -20,6 +20,20 @@
         <include refid="base_column_list"/>
         FROM order_items
         WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectByOrderIdAndProductId" resultMap="order_item_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM order_items
+        WHERE order_id = #{orderId} and product_id=#{productId}
+    </select>
+
+    <select id="selectByOrderItemId" resultMap="order_item_result">
+        SELECT
+        <include refid="base_column_list"/>
+        FROM order_items
+        WHERE order_item_id = #{orderItemId}
     </select>
 
     <insert id="insertSelective" parameterType="com.example.demo.entity.OrderItem">

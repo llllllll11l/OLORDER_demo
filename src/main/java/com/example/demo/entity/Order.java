@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Data
-public class Orders {
+public class Order {
     private String orderID;
     private String customerId;
     private String storeId;
@@ -17,5 +17,4 @@ public class Orders {
     private Timestamp orderDate;
     private Timestamp createAt;
     private Timestamp updateAt;
-
 }

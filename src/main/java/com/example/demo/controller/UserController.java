@@ -43,14 +43,12 @@ public class UserController {
     @PostMapping("/user/login")
     @Operation(summary = "登陆接口", description = "用户登陆")
     public Result<String> login(@RequestBody @Parameter(name="登陆信息") @Valid UserLoginParam userLoginParam){
-        ServiceResultEnum serviceResult=userService.login(userLoginParam.getUsername(),userLoginParam.getPasswordHash());
-        logger.info("login api, username={}, loginResult={}",userLoginParam.getUsername(), serviceResult.getResult());
-        if(serviceResult==ServiceResultEnum.LOGIN_SUCCESSED_NEW_TOKEN||serviceResult==ServiceResultEnum.LOGIN_SUCCESSED_UPDATE_TOKEN){
-            Result<String> result= ResultGenerator.genSuccessResult();
-            result.setData(serviceResult.getResult());
-            return result;
+        String serviceResult=userService.login(userLoginParam.getUsername(),userLoginParam.getPasswordHash());
+        logger.info("login api, username={}, loginResult={}",userLoginParam.getUsername(), serviceResult);
+        if(!(serviceResult.equals("LOGIN_FAILED")||serviceResult.equals("USER_DELETED"))){
+            return ResultGenerator.genSuccessResult(serviceResult);
         }
-        return ResultGenerator.genFailResult(serviceResult.getResult());
+        return ResultGenerator.genFailResult("FAILED");
     }
 
     @GetMapping("/user/findAll")
@@ -91,14 +89,6 @@ public class UserController {
     @Operation(summary="修改用户信息", description = "")
     public Result updateInfo(@RequestBody UserUpdateInfoParam userUpdateInfoParam,
                              @TokenRequired User user){
-        /*
-        System.out.println("Request body received:");
-        System.out.println("username: " + userUpdateInfoParam.getUsername());
-        System.out.println("email: " + userUpdateInfoParam.getEmail());
-        System.out.println("phoneNumber: " + userUpdateInfoParam.getPhoneNumber());
-        System.out.println("passwordHash: " + userUpdateInfoParam.getPasswordHash());
-        System.out.println("profilePicture: " + userUpdateInfoParam.getProfilePicture());
-        */
         ServiceResultEnum serviceResult=userService.updateInfo(userUpdateInfoParam, user.getUserId());
         if(serviceResult== UPDATE_FAILED){
             return ResultGenerator.genFailResult(UPDATE_FAILED.getResult());
@@ -111,7 +101,7 @@ public class UserController {
 
     @PostMapping("/user/logout")
     @Operation(summary = "登出接口", description = "登出，清除token")
-    public Result logout(@TokenRequired User user){
+    public Result<String> logout(@TokenRequired User user){
         ServiceResultEnum serviceResultEnum=userService.logout(user.getUserId());
         logger.info("logout api, loginUser={}", user.getUserId());
         if(serviceResultEnum==SUCCESS){
@@ -125,16 +115,14 @@ public class UserController {
 
     @PostMapping("/user/register")
     @Operation(summary = "用户注册", description = "")
-    public Result register(@RequestBody @Valid UserRegisterParam userRegisterParam) {
-        ServiceResultEnum registerResult = userService.register(userRegisterParam.getUsername(), userRegisterParam.getPasswordHash(), userRegisterParam.getUserType());
+    public Result<String> register(@RequestBody @Valid UserRegisterParam userRegisterParam) {
+        String registerResult = userService.register(userRegisterParam.getUsername(), userRegisterParam.getPasswordHash(), userRegisterParam.getUserType());
         logger.info("register api,username={},loginResult={}", userRegisterParam.getUsername(), registerResult);
 
-        if (registerResult==SUCCESS) {
+        if (!registerResult.equals("FAILED")) {
             return ResultGenerator.genSuccessResult();
         }
-        else if(registerResult==REGISTER_FAILED) {
+        else
             return ResultGenerator.genFailResult(REGISTER_FAILED.getResult());
         }
-        return null;
-    }
 }

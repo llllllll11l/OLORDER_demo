@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_id VARCHAR(255) PRIMARY KEY,  -- 订单ID，主键
     customer_id VARCHAR(255) NOT NULL,  -- 顾客ID
     store_id VARCHAR(255) NOT NULL,  -- 店铺ID
-    order_status ENUM('PENDING', 'SHIPPED', 'DELIVERED', 'CANCELED') NOT NULL DEFAULT 'PENDING',  -- 订单状态
+    order_status ENUM('PENDING', 'PAID','CONFIRMED','SHIPPED', 'DELIVERED', 'CANCELED') NOT NULL DEFAULT 'PENDING',  -- 订单状态
     order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 订单创建时间
     total_amount DECIMAL(10, 2) NOT NULL,  -- 订单总金额
     delivery_address TEXT NOT NULL,  -- 配送地址

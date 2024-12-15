@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.dao.OrderMapper">
-    <resultMap type="com.example.demo.entity.Orders" id="orders_result">
+    <resultMap type="com.example.demo.entity.Order" id="orders_result">
         <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
         <result property="customerId" column="customer_id" jdbcType="VARCHAR"/>
         <result property="storeId" column="store_id" jdbcType="VARCHAR"/>
@@ -27,7 +27,6 @@
         where order_id = #{orderId}
     </select>
 
-
     <select id="selectByUserId" resultMap="orders_result">
         select
         <include refid="base_column_list"/>
@@ -35,7 +34,14 @@
         where customer_id = #{userId}
     </select>
 
-    <insert id="insertSelective" parameterType="com.example.demo.entity.Orders">
+    <select id="selectByUserIdAndStoreId" resultMap="orders_result">
+        select
+        <include refid="base_column_list"/>
+        from orders
+        where customer_id = #{userId} and store_id=#{storeId}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.example.demo.entity.Order">
         insert into orders
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderId != null">
@@ -104,7 +110,7 @@
     </delete>
 
 
-    <update id="updateByOrderId" parameterType="com.example.demo.entity.Orders">
+    <update id="updateByOrderId" parameterType="com.example.demo.entity.Order">
         update orders
         <set>
             <if test="customerId != null">

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.Config.TokenRequired;
 import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.Enums.UserType;
+import com.example.demo.Util.PageQuery;
 import com.example.demo.Util.Result;
 import com.example.demo.Util.ResultGenerator;
 import com.example.demo.controller.Param.ProductAddParam;
@@ -56,14 +57,13 @@ public class StoreController {
         if(user.getUserType()!= UserType.MERCHANT){
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        ServiceResultEnum serviceResult=storeService.addStore(storeAddParam,user.getUserId());
-        if(serviceResult==SUCCESS){
-            return ResultGenerator.genSuccessResult();
+        String serviceResult=storeService.addStore(storeAddParam,user.getUserId());
+        if(!serviceResult.equals("UPDATE_FAILED")){
+            return ResultGenerator.genSuccessResult(serviceResult);
         }
-        else if(serviceResult==UPDATE_FAILED){
-            return ResultGenerator.genFailResult(serviceResult.getResult());
+        else{
+            return ResultGenerator.genFailResult(serviceResult);
         }
-        return null;
     }
 
     @DeleteMapping("/store/{storeId}/del")
@@ -100,12 +100,12 @@ public class StoreController {
         if(user.getUserType()!= UserType.MERCHANT){
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        ServiceResultEnum serviceResult=storeService.addProduct(productAddParam,storeId);
-        if(serviceResult==SUCCESS){
-            return ResultGenerator.genSuccessResult();
+        String serviceResult=storeService.addProduct(productAddParam,storeId);
+        if(!serviceResult.equals("ADD_PRODUCT_FAILED")){
+            return ResultGenerator.genSuccessResult(serviceResult);
         }
         else{
-            return ResultGenerator.genFailResult(serviceResult.getResult());
+            return ResultGenerator.genFailResult(serviceResult);
         }
     }
 
@@ -141,7 +141,8 @@ public class StoreController {
 
     @GetMapping("/store/owner/{userId}")
     @Operation(summary = "查找用户名下店铺",description = "")
-    public Result<List<Store>> getStoreByUserId(@PathVariable("userId") String userId){
+    public Result<List<Store>> getStoreByUserId(@PathVariable("userId") String userId,
+                                                @TokenRequired User user){
         List<Store> list=storeMapper.selectByUserId(userId);
         if(list!=null) {
             return ResultGenerator.genSuccessResult(list);
@@ -151,11 +152,23 @@ public class StoreController {
 
     @GetMapping("/store/{storeId}/products")
     @Operation(summary = "查找店铺里的商品",description = "")
-    public Result<List<Product>> getProductsByStoreId(@PathVariable("storeId") String storeId){
+    public Result<List<Product>> getProductsByStoreId(@PathVariable("storeId") String storeId,
+                                                      @TokenRequired User user){
         List<Product> list=productMapper.selectByStoreId(storeId);
         if(list!=null){
             return ResultGenerator.genSuccessResult(list);
         }
         return ResultGenerator.genFailResult("FAILED");
+    }
+
+    @GetMapping("/store/list")
+    @Operation(summary = "根据搜索分页查看店铺列表",description = "")
+    public Result<List<Store>> getStoreListBySearch(@RequestBody PageQuery query,
+                                                    @TokenRequired User user){
+        if(user==null){
+            return ResultGenerator.genFailResult("USER NOT FOUND");
+        }
+        List<Store> storeList=storeMapper.findStoreListBySearch(query);
+        return ResultGenerator.genSuccessResult(storeList);
     }
 }

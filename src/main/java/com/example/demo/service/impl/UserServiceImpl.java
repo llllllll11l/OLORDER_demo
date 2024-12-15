@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Autowired private UserTokenMapper userTokenMapper;
 
     @Override
-    public ServiceResultEnum login(String username, String passwordHash){
+    public String login(String username, String passwordHash){
         User user = userMapper.selectByUsernameAndPwd(username, passwordHash);
         long now=System.currentTimeMillis();
         Timestamp nowTimestamp=new Timestamp(now);
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         if(user!=null){
             user.setLastLoginDate(nowTimestamp);
             if(user.getStatus()==DELETED)
-                return ServiceResultEnum.USER_DELETED;
+                return "USER_DELETED";
             String token=generateToken();
             UserToken userToken= userTokenMapper.selectByUserId(user.getUserId());
             if(userToken==null){
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
                 userToken.setExpireTime(expireTimestamp);
                 userToken.setTokenId(user.getUserId()+token);
                 if(userTokenMapper.insertSelective(userToken)>0)
-                    return ServiceResultEnum.LOGIN_SUCCESSED_NEW_TOKEN;
+                    return userToken.getToken();
             }
             else{
                 userToken.setToken(token);
@@ -53,11 +53,11 @@ public class UserServiceImpl implements UserService {
                 userToken.setExpireTime(expireTimestamp);
                 userToken.setTokenId(user.getUserId()+token);
                 if(userTokenMapper.updateByUserIdSelective(userToken)>0){
-                    return ServiceResultEnum.LOGIN_SUCCESSED_UPDATE_TOKEN;
+                    return userToken.getToken();
                 }
             }
         }
-        return ServiceResultEnum.LOGIN_ERROR;
+        return "LOGIN_FAILED";
     }
 
     @Override
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
         }
     }
     @Override
-    public ServiceResultEnum register(String username, String password, UserType userType){
+    public String register(String username, String password, UserType userType){
         User reguser=new User();
         reguser.setUsername(username);
         reguser.setPasswordHash(Util.hashPassword(password));
@@ -115,10 +115,10 @@ public class UserServiceImpl implements UserService {
         java.sql.Timestamp regDate=new Timestamp(System.currentTimeMillis());
         reguser.setRegistrationDate(regDate);
         if(userMapper.insertSelective(reguser)>0){
-            return ServiceResultEnum.SUCCESS;
+            return reguser.getUserId();
         }
         else{
-            return ServiceResultEnum.REGISTER_FAILED;
+            return "FAILED";
         }
     }
 }
