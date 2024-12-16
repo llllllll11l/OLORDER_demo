@@ -116,7 +116,7 @@ public class StoreController {
     @Operation(summary = "修改商品接口", description = "")
     public Result<String> updateProductInfo(@RequestBody @Parameter(name="productUpdateParam")ProductUpdateParam productUpdateParam,
                                             @PathVariable("storeId")String storeId,
-                                            @PathVariable("ProductId")String productId,
+                                            @PathVariable("productId")String productId,
                                             @TokenRequired User user){
         if(user.getUserType()!= UserType.MERCHANT){
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());

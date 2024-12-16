@@ -97,6 +97,7 @@ public class StoreServiceImpl implements StoreService {
         product.setProductID(UUID.randomUUID().toString());
         product.setCreateDate(new Timestamp(System.currentTimeMillis()));
         product.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+        product.setStoreID(storeId);
         BeanUtils.copyProperties(productAddParam,product);
         if(productMapper.insertSelective(product)>0){
             return product.getProductID();

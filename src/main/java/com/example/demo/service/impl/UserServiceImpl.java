@@ -27,12 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(String username, String passwordHash){
-        User user = userMapper.selectByUsernameAndPwd(username, passwordHash);
-        long now=System.currentTimeMillis();
-        Timestamp nowTimestamp=new Timestamp(now);
-        Timestamp expireTimestamp=new Timestamp(now+2*24*3600*1000);
+        User user = userMapper.selectByUsernameAndPwd(username, hashPassword(passwordHash));
         if(user!=null){
-            user.setLastLoginDate(nowTimestamp);
+            long now=System.currentTimeMillis();
+            user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
             if(user.getStatus()==DELETED)
                 return "USER_DELETED";
             String token=generateToken();
@@ -41,16 +39,16 @@ public class UserServiceImpl implements UserService {
                 userToken=new UserToken();
                 userToken.setUserId(user.getUserId());
                 userToken.setToken(token);
-                userToken.setUpdateTime(nowTimestamp);
-                userToken.setExpireTime(expireTimestamp);
+                userToken.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                userToken.setExpireTime(new Timestamp(System.currentTimeMillis()+2*24*3600*1000));
                 userToken.setTokenId(user.getUserId()+token);
                 if(userTokenMapper.insertSelective(userToken)>0)
                     return userToken.getToken();
             }
             else{
                 userToken.setToken(token);
-                userToken.setUpdateTime(nowTimestamp);
-                userToken.setExpireTime(expireTimestamp);
+                userToken.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                userToken.setExpireTime(new Timestamp(System.currentTimeMillis()+2*24*3600*1000));
                 userToken.setTokenId(user.getUserId()+token);
                 if(userTokenMapper.updateByUserIdSelective(userToken)>0){
                     return userToken.getToken();

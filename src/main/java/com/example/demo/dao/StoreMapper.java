@@ -9,6 +9,7 @@ import java.util.List;
 public interface StoreMapper {
     List<Store> selectByUserId(String userId);
     Store selectByStoreId(String storeId);
+    Store selectByStoreName(String storeName);
     int insertSelective(Store store);
     int updateByStoreId(Store store);
     int deleteByStoreId(String storeId);//先不用实现

@@ -112,6 +112,7 @@ public class OrderController {
             order.setOrderStatus(OrderStatus.CANCELED);
         }
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
+        order.setDeliveryAddress(orderCustomerConfirmParam.getDeliveryAddress());
         return ResultGenerator.genSuccessResult();
     }
 
@@ -214,7 +215,7 @@ public class OrderController {
         }
         OrderVO orderVO=new OrderVO();
         BeanUtils.copyProperties(order,orderVO);
-        orderVO.setItems(orderItemMapper.selectByOrderId(order.getOrderID()));
+        orderVO.setItems(orderItemMapper.selectByOrderId(order.getOrderId()));
         return ResultGenerator.genSuccessResult(orderVO);
     }
 }

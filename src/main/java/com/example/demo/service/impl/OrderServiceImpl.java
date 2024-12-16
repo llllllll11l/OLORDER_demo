@@ -36,12 +36,13 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
         order.setCreateAt(new Timestamp(System.currentTimeMillis()));
         order.setTotalAmount(new BigDecimal(0));
-        order.setOrderID(UUID.randomUUID().toString());
+        order.setOrderId(UUID.randomUUID().toString());
         order.setStoreId(storeId);
         order.setCustomerId(userId);
         order.setOrderStatus(OrderStatus.PENDING);
+        order.setDeliveryAddress("PENDING");
         if(orderMapper.insertSelective(order)>0)
-            return order.getOrderID();
+            return order.getOrderId();
         return ServiceResultEnum.CREATE_ORDER_FAILED.getResult();
     }
 
@@ -80,9 +81,9 @@ public class OrderServiceImpl implements OrderService {
             }
             order=orderMapper.selectByOrderId(createOrderResult);
         }
-        OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderID(),productId);
+        OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderId(),productId);
         if(orderItem==null){
-            String createOrderItemResult =createOrderItem(order.getOrderID(),productId);
+            String createOrderItemResult =createOrderItem(order.getOrderId(),productId);
             if(createOrderItemResult.equals(ServiceResultEnum.CREATE_ORDER_ITEM_FAILED.getResult())){
                 return null;
             }
@@ -92,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         orderItem.setQuantity(orderItem.getQuantity()+1);
         orderItem.setTotalPrice(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
-        return new Pair<>(order.getOrderID(), orderItem.getOrderItemId());
+        return new Pair<>(order.getOrderId(), orderItem.getOrderItemId());
     }
 
     @Override
@@ -112,9 +113,9 @@ public class OrderServiceImpl implements OrderService {
         if(order==null){
             return null;
         }
-        OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderID(),productId);
+        OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderId(),productId);
         if(orderItemMapper.deleteByOrderItemId(orderItem.getOrderItemId())>0){
-            return order.getOrderID();
+            return order.getOrderId();
         }
         return null;
     }

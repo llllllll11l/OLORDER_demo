@@ -1,32 +1,16 @@
 package com.example.demo.controller;
 
 import com.example.demo.Config.TokenRequired;
-import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.Util.Result;
 import com.example.demo.Util.ResultGenerator;
-import com.example.demo.controller.Param.AdminLoginParam;
-import com.example.demo.controller.Param.UserLoginParam;
-import com.example.demo.controller.Param.UserRegisterParam;
-import com.example.demo.controller.Param.UserUpdateInfoParam;
-import com.example.demo.controller.vo.UserVO;
 import com.example.demo.dao.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.AdminService;
-import com.example.demo.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static com.example.demo.Enums.ServiceResultEnum.*;
 
 @RestController
 @Tag(name="管理员接口", description = "")
@@ -44,8 +28,6 @@ public class AdminController {
     StoreReviewMapper storeReviewMapper;
     @Autowired
     OrderMapper orderMapper;
-    @Resource
-    private AdminService adminService;
 
     @PutMapping("/admin/store/{storeId}")
     @Operation(summary = "修改店铺信息",description = "")
@@ -138,7 +120,7 @@ public class AdminController {
         if(!user.getIsAdmin()){
             return ResultGenerator.genFailResult("NOT ADMIN");
         }
-        if(!orderParam.getOrderID().equals(orderId)){
+        if(!orderParam.getOrderId().equals(orderId)){
             return ResultGenerator.genFailResult("INCORRECT ID");
         }
         if(orderMapper.updateByOrderId(orderParam)>0){

@@ -34,6 +34,13 @@
         where store_id = #{storeId}
     </select>
 
+    <select id="selectByStoreName" resultMap="store_result">
+        select
+        <include refid="base_column_list"/>
+        from stores
+        where store_name = #{storeName}
+    </select>
+
     <insert id="insertSelective" parameterType="com.example.demo.entity.Store">
         insert into stores
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -47,7 +54,7 @@
             <if test="verificationDocs != null">verification_docs,</if>
             <if test="ownerID != null">owner_id,</if>
             <if test="createdAt != null">created_at,</if>
-            <if test="updateAt != null">update_at,</if>
+            <if test="updateAt != null">updated_at,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="storeId != null">#{storeId},</if>
@@ -76,7 +83,7 @@
             <if test="verificationDocs != null">verification_docs = #{verificationDocs},</if>
             <if test="ownerID != null">owner_id = #{ownerID},</if>
             <if test="createdAt != null">created_at = #{createdAt},</if>
-            <if test="updateAt != null">update_at = #{updateAt},</if>
+            <if test="updateAt != null">updated_at = #{updateAt},</if>
         </set>
         where store_id = #{storeId}
     </update>
@@ -122,7 +129,7 @@
         </if>
     </select>
 
-    <select id="getNumOfStoresBySearch" parameterType="Map" resultMap="int">
+    <select id="getNumOfStoresBySearch" parameterType="Map" resultType="int">
         select count(*) from stores
         <where>
             <if test="keyword!=null and keyword!=''">

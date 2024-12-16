@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 @Data
 public class Order {
-    private String orderID;
+    private String orderId;
     private String customerId;
     private String storeId;
     private BigDecimal totalAmount;

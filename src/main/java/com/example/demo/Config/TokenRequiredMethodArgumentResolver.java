@@ -29,8 +29,6 @@ public class TokenRequiredMethodArgumentResolver implements HandlerMethodArgumen
     }
 
     public Object resolveArgument(MethodParameter param, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory){
-        //System.out.println("Resolving parameter: " + param.getParameterName());
-        //System.out.println("Parameter type: " + param.getParameterType());
         if(param.getParameterAnnotation(TokenRequired.class) != null){
             User user=null;
             String token=webRequest.getHeader("Token");

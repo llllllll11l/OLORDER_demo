@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class OrderVO implements Serializable {
-    private String orderID;
+    private String orderId;
     private String customerId;
     private String storeId;
     private BigDecimal totalAmount;
