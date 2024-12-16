@@ -176,7 +176,7 @@ public class StoreController {
         return ResultGenerator.genFailResult("FAILED");
     }
 
-    @GetMapping("/store/list")
+    @GetMapping("/store/list/search")
     @Operation(summary = "根据搜索分页查看店铺列表",description = "")
     public Result<List<StoreListVO>> getStoreListBySearch(@RequestBody PageQuery query,
                                                     @TokenRequired User user){
@@ -193,6 +193,25 @@ public class StoreController {
             }
             return ResultGenerator.genSuccessResult(storeListVOList);
         }
-        return ResultGenerator.genFailResult("FAILED");
+        return ResultGenerator.genFailResult("STORE NOT FOUND");
+    }
+
+    @GetMapping("/store/list")
+    @Operation(summary = "查看店铺列表",description = "")
+    public Result<List<StoreListVO>> getAllStores(@TokenRequired User user){
+        if(user==null){
+            return ResultGenerator.genFailResult("USER NOT FOUND");
+        }
+        List<Store> storeList=storeMapper.findAllStores();
+        if(storeList!=null){
+            List<StoreListVO> storeListVOList=new ArrayList<>();
+            for(Store i:storeList){
+                StoreListVO t=new StoreListVO();
+                BeanUtils.copyProperties(i,t);
+                storeListVOList.add(t);
+            }
+            return ResultGenerator.genSuccessResult(storeListVOList);
+        }
+        return ResultGenerator.genFailResult("STORE NOT FOUND");
     }
 }

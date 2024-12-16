@@ -20,7 +20,12 @@ public enum ServiceResultEnum {
     NO_PERMISSION_TO_STORE("没有权限操作该店铺"),
     ADD_STORE_FAILED("添加店铺失败"),
     ADD_PRODUCT_FAILED("添加商品失败"),
-    DELETE_STORE_FAILED("删除店铺失败");
+    DELETE_STORE_FAILED("删除店铺失败"),
+    ADD_TO_CART_FAILED("添加至购物车失败"),
+    REMOVE_FROM_CART_FAILED("从购物车移除失败"),
+    CREATE_ORDER_FAILED("创建订单失败"),
+    CREATE_ORDER_ITEM_FAILED("创建订单商品失败"),
+    ADD_STORE_REVIEW_FAILED("添加店铺评论失败");
 
     private String result;
     ServiceResultEnum(String result) {

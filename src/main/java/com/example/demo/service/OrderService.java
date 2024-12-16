@@ -40,5 +40,5 @@ public interface OrderService {
      * @param productId
      * @return
      */
-    Pair<String,String> removeFromCart(String userId,String storeId, String productId);
+    String removeFromCart(String userId,String storeId, String productId);
 }

@@ -48,7 +48,7 @@ public class UserController {
         if(!(serviceResult.equals("LOGIN_FAILED")||serviceResult.equals("USER_DELETED"))){
             return ResultGenerator.genSuccessResult(serviceResult);
         }
-        return ResultGenerator.genFailResult("FAILED");
+        return ResultGenerator.genFailResult(TOKEN_EXPIRE_ERROR.getResult());
     }
 
     @GetMapping("/user/findAll")
@@ -87,7 +87,7 @@ public class UserController {
  */
     @PutMapping("/user/updinfo")
     @Operation(summary="修改用户信息", description = "")
-    public Result updateInfo(@RequestBody UserUpdateInfoParam userUpdateInfoParam,
+    public Result<String> updateInfo(@RequestBody UserUpdateInfoParam userUpdateInfoParam,
                              @TokenRequired User user){
         ServiceResultEnum serviceResult=userService.updateInfo(userUpdateInfoParam, user.getUserId());
         if(serviceResult== UPDATE_FAILED){
@@ -120,7 +120,7 @@ public class UserController {
         logger.info("register api,username={},loginResult={}", userRegisterParam.getUsername(), registerResult);
 
         if (!registerResult.equals("FAILED")) {
-            return ResultGenerator.genSuccessResult();
+            return ResultGenerator.genSuccessResult(registerResult);
         }
         else
             return ResultGenerator.genFailResult(REGISTER_FAILED.getResult());

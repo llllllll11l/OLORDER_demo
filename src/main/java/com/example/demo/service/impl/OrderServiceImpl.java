@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.Util.Pair;
 import com.example.demo.Util.ResultGenerator;
 import com.example.demo.dao.*;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.PENDING);
         if(orderMapper.insertSelective(order)>0)
             return order.getOrderID();
-        return "FAILED";
+        return ServiceResultEnum.CREATE_ORDER_FAILED.getResult();
     }
 
     @Override
@@ -54,13 +56,12 @@ public class OrderServiceImpl implements OrderService {
         orderItem.setOrderId(UUID.randomUUID().toString());
         if(orderItemMapper.insertSelective(orderItem)>0)
             return orderItem.getOrderItemId();
-        return "FAILED";
+        return ServiceResultEnum.CREATE_ORDER_ITEM_FAILED.getResult();
     }
 
     @Override
     public Pair<String, String> addToCartBy1(String userId, String storeId, String productId) {
         Product product=productMapper.selectByProductId(productId);
-
         List<Order> orderList=orderMapper.selectByUserIdAndStoreId(userId,storeId);
         //flag==true -- 已有PENDING订单
         boolean flag=false;
@@ -74,28 +75,47 @@ public class OrderServiceImpl implements OrderService {
         }
         if(!flag){
             String createOrderResult =createOrder(userId,storeId);
-            if(createOrderResult.equals("FAILED")){
+            if(createOrderResult.equals(ServiceResultEnum.CREATE_ORDER_FAILED.getResult())){
                 return null;
             }
             order=orderMapper.selectByOrderId(createOrderResult);
         }
-        order.setTotalAmount(order.getTotalAmount().add(product.getPrice()));
         OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderID(),productId);
         if(orderItem==null){
             String createOrderItemResult =createOrderItem(order.getOrderID(),productId);
-            if(createOrderItemResult.equals("FAILED")){
+            if(createOrderItemResult.equals(ServiceResultEnum.CREATE_ORDER_ITEM_FAILED.getResult())){
                 return null;
             }
             orderItem=orderItemMapper.selectByOrderItemId(createOrderItemResult);
         }
+        order.setTotalAmount(order.getTotalAmount().add(product.getPrice()));
+        order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         orderItem.setQuantity(orderItem.getQuantity()+1);
-        BigDecimal quant=new BigDecimal(orderItem.getQuantity());
-        orderItem.setTotalPrice(orderItem.getPrice().multiply(quant));
+        orderItem.setTotalPrice(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
         return new Pair<>(order.getOrderID(), orderItem.getOrderItemId());
     }
 
     @Override
-    public Pair<String, String> removeFromCart(String userId, String storeId, String productId) {
+    public String removeFromCart(String userId, String storeId, String productId) {
+        Product product=productMapper.selectByProductId(productId);
+        List<Order> orderList=orderMapper.selectByUserIdAndStoreId(userId,storeId);
+        if(orderList==null){
+            return null;
+        }
+        Order order=null;
+        for(Order i:orderList){
+            if(i.getOrderStatus()== OrderStatus.PENDING){
+                order=i;
+                break;
+            }
+        }
+        if(order==null){
+            return null;
+        }
+        OrderItem orderItem=orderItemMapper.selectByOrderIdAndProductId(order.getOrderID(),productId);
+        if(orderItemMapper.deleteByOrderItemId(orderItem.getOrderItemId())>0){
+            return order.getOrderID();
+        }
         return null;
     }
 }
