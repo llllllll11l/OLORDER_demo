@@ -21,4 +21,5 @@ public class User {
     private UserStatus status;
     Boolean isEmailVerified;
     Boolean isPhoneVerified;
+    Boolean isAdmin;
 }

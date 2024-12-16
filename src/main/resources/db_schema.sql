@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS stores;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS admins;
 
 -- 用户表
 CREATE TABLE users (
@@ -27,29 +26,13 @@ CREATE TABLE users (
     last_password_change TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 上次密码修改时间
     is_email_verified BOOLEAN DEFAULT FALSE,  -- 邮箱是否验证
     is_phone_verified BOOLEAN DEFAULT FALSE,  -- 手机是否验证
+    is_admin BOOLEAN DEFAULT FALSE, -- 是否为管理员
     INDEX idx_users_username (username),  -- 为用户名创建索引
     INDEX idx_users_email (email),  -- 为邮箱创建索引
     INDEX idx_users_phone_number (phone_number)  -- 为手机号创建索引
 );
 
--- 管理员表
-CREATE TABLE admins (
-    admin_id VARCHAR(255) NOT NULL PRIMARY KEY,  -- 管理员ID，主键
-    admin_name VARCHAR(255) NOT NULL UNIQUE,  -- 管理员用户名，唯一约束
-    password_hash VARCHAR(255) NOT NULL,  -- 密码哈希
-    email VARCHAR(255) UNIQUE,  -- 管理员邮箱，唯一约束
-    phone_number VARCHAR(20) UNIQUE,  -- 管理员手机号，唯一约束
-    profile_picture VARCHAR(255),  -- 管理员头像
-    registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 注册日期
-    last_login_date TIMESTAMP,  -- 上次登录时间
-    status ENUM('ACTIVE', 'DISABLED') NOT NULL DEFAULT 'ACTIVE',  -- 管理员状态
-    last_password_change TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 上次密码修改时间
-    INDEX idx_admins_admin_name (admin_name),  -- 为管理员用户名创建索引
-    INDEX idx_admins_email (email)  -- 为管理员邮箱创建索引
-);
-
 -- 店铺表
-DROP TABLE IF EXISTS stores;
 CREATE TABLE IF NOT EXISTS stores (
     store_id VARCHAR(255) NOT NULL PRIMARY KEY,  -- 店铺ID，主键
     store_name VARCHAR(255) NOT NULL UNIQUE,  -- 店铺名称，唯一约束

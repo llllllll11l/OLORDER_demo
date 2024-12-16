@@ -34,6 +34,13 @@
         where customer_id = #{userId}
     </select>
 
+    <select id="selectByStoreId" resultMap="orders_result">
+        select
+        <include refid="base_column_list"/>
+        from orders
+        where store_id = #{storeId}
+    </select>
+
     <select id="selectByUserIdAndStoreId" resultMap="orders_result">
         select
         <include refid="base_column_list"/>
