@@ -54,7 +54,8 @@ public class OrderServiceImpl implements OrderService {
         orderItem.setOrderId(orderId);
         orderItem.setProductId(productId);
         orderItem.setPrice(productMapper.selectByProductId(productId).getPrice());
-        orderItem.setOrderId(UUID.randomUUID().toString());
+        /*orderItem.setOrderId(UUID.randomUUID().toString());*/
+        orderItem.setOrderItemId(UUID.randomUUID().toString());
         if(orderItemMapper.insertSelective(orderItem)>0)
             return orderItem.getOrderItemId();
         return ServiceResultEnum.CREATE_ORDER_ITEM_FAILED.getResult();

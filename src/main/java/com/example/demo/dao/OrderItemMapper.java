@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderItemMapper {
     List<OrderItem> selectByOrderId(String orderId);
-    OrderItem selectByOrderIdAndProductId(@Param("orderId")String orderId, @Param("ProductId")String ProductId);
+    OrderItem selectByOrderIdAndProductId(@Param("orderId")String orderId, /*ProductId->productId*/@Param("productId")String productId);
     OrderItem selectByOrderItemId(String orderItemId);
     int insertSelective(OrderItem orderItem);
     int deleteByOrderItemId(String orderItemId);

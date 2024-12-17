@@ -16,10 +16,12 @@
         <result property="lastPasswordChange" column="last_password_change" jdbcType="TIMESTAMP"/>
         <result property="isEmailVerified" column="is_email_verified" jdbcType="BOOLEAN"/>
         <result property="isPhoneVerified" column="is_phone_verified" jdbcType="BOOLEAN"/>
+        <!--新加is_admin-->
+        <result property="isAdmin" column="is_admin" jdbcType="BOOLEAN"/>
     </resultMap>
 
     <sql id="base_column_list">
-        user_id, username, password_hash, email, user_type, phone_number, registration_date, status, last_login_date, profile_picture, last_password_change, is_email_verified, is_phone_verified
+        user_id, username, password_hash, email, user_type, phone_number, registration_date, status, last_login_date, profile_picture, last_password_change, is_email_verified, is_phone_verified, is_admin
     </sql>
 
     <select id="findAllUsers" resultMap="user_result">
@@ -82,6 +84,10 @@
             <if test="lastLoginDate != null">
                 last_login_date,
             </if>
+            <!--新加is_admin-->
+            <if test="isAdmin != null">
+                is_admin,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">
@@ -120,6 +126,10 @@
             <if test="lastLoginDate != null">
                 #{lastLoginDate},
             </if>
+            <!--新加is_admin-->
+            <if test="isAdmin != null">
+                #{isAdmin},
+            </if>
         </trim>
     </insert>
     <update id="updateByUserId" parameterType="com.example.demo.entity.User">
@@ -148,6 +158,10 @@
             </if>
             <if test="lastPasswordChange != null">
                 last_password_change=#{lastPasswordChange,jdbcType=TIMESTAMP},
+            </if>
+            <!--新加is_admin-->
+            <if test="isAdmin != null">
+                is_admin=#{isAdmin,jdbcType=BOOLEAN},
             </if>
         </set>
         where user_id = #{userId,jdbcType=VARCHAR}

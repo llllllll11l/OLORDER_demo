@@ -103,7 +103,8 @@ public class OrderController {
         }
         Order order=orderMapper.selectByOrderId(orderId);
         if(order==null){
-            return ResultGenerator.genSuccessResult("ORDER NOT FOUND");
+//            return ResultGenerator.genSuccessResult("ORDER NOT FOUND");
+            return ResultGenerator.genFailResult("ORDER NOT FOUND");
         }
         if(orderCustomerConfirmParam.isConfirm()){
             order.setOrderStatus(OrderStatus.PAID);
@@ -111,6 +112,7 @@ public class OrderController {
         else{
             order.setOrderStatus(OrderStatus.CANCELED);
         }
+        orderMapper.updateByOrderId(order);
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         order.setDeliveryAddress(orderCustomerConfirmParam.getDeliveryAddress());
         return ResultGenerator.genSuccessResult();
