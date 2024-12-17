@@ -3,17 +3,16 @@ package com.example.demo.service.impl;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.Util.Pair;
-import com.example.demo.Util.ResultGenerator;
 import com.example.demo.dao.*;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product;
+import com.example.demo.entity.Store;
 import com.example.demo.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +40,11 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomerId(userId);
         order.setOrderStatus(OrderStatus.PENDING);
         order.setDeliveryAddress("PENDING");
+
+        Store store=storeMapper.selectByStoreId(storeId);
+        store.setVisited(store.getVisited()+1);
+        storeMapper.updateByStoreId(store);
+
         if(orderMapper.insertSelective(order)>0)
             return order.getOrderId();
         return ServiceResultEnum.CREATE_ORDER_FAILED.getResult();
@@ -54,7 +58,6 @@ public class OrderServiceImpl implements OrderService {
         orderItem.setOrderId(orderId);
         orderItem.setProductId(productId);
         orderItem.setPrice(productMapper.selectByProductId(productId).getPrice());
-        /*orderItem.setOrderId(UUID.randomUUID().toString());*/
         orderItem.setOrderItemId(UUID.randomUUID().toString());
         if(orderItemMapper.insertSelective(orderItem)>0)
             return orderItem.getOrderItemId();
@@ -91,9 +94,14 @@ public class OrderServiceImpl implements OrderService {
             orderItem=orderItemMapper.selectByOrderItemId(createOrderItemResult);
         }
         order.setTotalAmount(order.getTotalAmount().add(product.getPrice()));
+        System.out.println("-----"+order.getTotalAmount());
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         orderItem.setQuantity(orderItem.getQuantity()+1);
+        System.out.println("-----"+orderItem.getQuantity());
         orderItem.setTotalPrice(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+        System.out.println("-----"+orderItem.getTotalPrice());
+        if(orderMapper.updateByOrderId(order)<=0||orderItemMapper.updateByOrderItemId(orderItem)<=0)
+            return null;
         return new Pair<>(order.getOrderId(), orderItem.getOrderItemId());
     }
 

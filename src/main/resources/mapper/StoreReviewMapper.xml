@@ -81,4 +81,9 @@
         </set>
         where review_id = #{reviewID}
     </update>
+
+    <select id="getNumOfReviewsByStoreId" parameterType="String" resultType="int">
+        select count(*) from store_reviews
+        where store_id=#{storeId}
+    </select>
 </mapper>

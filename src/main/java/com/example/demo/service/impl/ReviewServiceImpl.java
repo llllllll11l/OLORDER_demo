@@ -3,7 +3,9 @@ package com.example.demo.service.impl;
 import com.example.demo.Enums.ServiceResultEnum;
 import com.example.demo.Enums.StoreReviewStatus;
 import com.example.demo.controller.Param.StoreReviewAddParam;
+import com.example.demo.dao.StoreMapper;
 import com.example.demo.dao.StoreReviewMapper;
+import com.example.demo.entity.Store;
 import com.example.demo.entity.StoreReview;
 import com.example.demo.service.ReviewService;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +19,8 @@ import java.util.UUID;
 public class ReviewServiceImpl implements ReviewService {
     @Autowired
     StoreReviewMapper storeReviewMapper;
+    @Autowired
+    StoreMapper storeMapper;
     @Override
     public String addStoreReview(String userId, String storeId, StoreReviewAddParam storeReviewAddParam) {
         StoreReview storeReview=new StoreReview();
@@ -26,7 +30,15 @@ public class ReviewServiceImpl implements ReviewService {
         storeReview.setReviewDate(new Timestamp(System.currentTimeMillis()));
         storeReview.setStatus(StoreReviewStatus.NORMAL);
         BeanUtils.copyProperties(storeReviewAddParam,storeReview);
-        if(storeReviewMapper.insertSelective(storeReview)>0){
+        Store store=storeMapper.selectByStoreId(storeId);
+        store.setRating(
+                (
+                storeReviewMapper.getNumOfReviewsByStoreId(storeId)*store.getRating()+
+                (double)storeReviewAddParam.getRating()
+                )
+                        /(double)(storeReviewMapper.getNumOfReviewsByStoreId(storeId)+1)
+        );
+        if(storeReviewMapper.insertSelective(storeReview)>0&&storeMapper.updateByStoreId(store)>0){
             return storeReview.getReviewID();
         }
         return ServiceResultEnum.ADD_STORE_REVIEW_FAILED.getResult();

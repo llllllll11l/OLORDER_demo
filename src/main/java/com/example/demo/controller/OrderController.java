@@ -103,7 +103,6 @@ public class OrderController {
         }
         Order order=orderMapper.selectByOrderId(orderId);
         if(order==null){
-//            return ResultGenerator.genSuccessResult("ORDER NOT FOUND");
             return ResultGenerator.genFailResult("ORDER NOT FOUND");
         }
         if(orderCustomerConfirmParam.isConfirm()){
@@ -112,10 +111,11 @@ public class OrderController {
         else{
             order.setOrderStatus(OrderStatus.CANCELED);
         }
-        orderMapper.updateByOrderId(order);
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         order.setDeliveryAddress(orderCustomerConfirmParam.getDeliveryAddress());
-        return ResultGenerator.genSuccessResult();
+        if(orderMapper.updateByOrderId(order)>0)
+            return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genFailResult("UPDATE ORDER STATUS FAILED");
     }
 
     @PutMapping("/store/merchant/{orderId}/")
@@ -137,6 +137,7 @@ public class OrderController {
             return ResultGenerator.genFailResult("ORDER STATUS ERROR");
         }
         if(orderMerchantConfirmParam.isConfirm()) {
+            System.out.println("CONFIRMING!!");
             order.setOrderStatus(OrderStatus.CONFIRMED);
         }
         else{
@@ -144,7 +145,9 @@ public class OrderController {
         }
         order.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
-        return ResultGenerator.genSuccessResult();
+        if(orderMapper.updateByOrderId(order)>0)
+            return ResultGenerator.genSuccessResult();
+        return ResultGenerator.genFailResult("UPDATE ORDER STATUS FAILED");
     }
 
     @PostMapping("/store/{storeId}/products/{productId}/cart/add")

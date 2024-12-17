@@ -10,4 +10,5 @@ public interface StoreReviewMapper {
     int insertSelective(StoreReview storeReview);
     int deleteByReviewId(String storeId);
     int updateByReviewId(StoreReview storeReview);
+    int getNumOfReviewsByStoreId(String storeId);
 }

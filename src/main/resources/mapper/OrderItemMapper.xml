@@ -84,4 +84,25 @@
         DELETE FROM order_items WHERE order_item_id = #{orderItemId}
     </delete>
 
+    <update id="updateByOrderItemId" parameterType="com.example.demo.entity.OrderItem">
+        update order_items
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="quantity != null">
+                quantity = #{quantity},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="totalPrice != null">
+                total_price = #{totalPrice},
+            </if>
+        </set>
+        where order_item_id = #{orderItemId}
+    </update>
 </mapper>
