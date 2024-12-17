@@ -28,14 +28,21 @@ import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.demo.Constants.Constants.UPLOAD_IMAGE_DIR;
 import static com.example.demo.Enums.ServiceResultEnum.*;
 
 @RestController
-@Tag(name="店铺接口", description = "")
+@Tag(name = "店铺接口", description = "")
 @RequestMapping("/api/v1")
 public class StoreController {
     @Autowired
@@ -49,47 +56,45 @@ public class StoreController {
 
     @GetMapping("/store/findAll")
     @Operation(summary = "查找所有店铺接口", description = "")
-    public List<Store> findAll(){
+    public List<Store> findAll() {
         return storeMapper.findAllStores();
     }
 
     @PostMapping("/store/add")
-    @Operation(summary="添加店铺接口", description = "")
-    public Result<String> addStore(@RequestBody @Valid @Parameter(name="storeAddParam", description = "")StoreAddParam storeAddParam,
-                           @TokenRequired User user){
-        if(user.getUserType()!= UserType.MERCHANT){
+    @Operation(summary = "添加店铺接口", description = "")
+    public Result<String> addStore(@RequestBody @Valid @Parameter(name = "storeAddParam", description = "") StoreAddParam storeAddParam,
+                                   @TokenRequired User user) {
+        if (user.getUserType() != UserType.MERCHANT) {
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        String serviceResult=storeService.addStore(storeAddParam,user.getUserId());
-        if(!serviceResult.equals("UPDATE_FAILED")){
+        String serviceResult = storeService.addStore(storeAddParam, user.getUserId());
+        if (!serviceResult.equals("UPDATE_FAILED")) {
             return ResultGenerator.genSuccessResult(serviceResult);
-        }
-        else{
+        } else {
             return ResultGenerator.genFailResult(serviceResult);
         }
     }
 
     @DeleteMapping("/store/{storeId}/del")
-    @Operation(summary = "删除店铺接口",description = "根据ID删除店铺")
-    public Result<String> delStore(@PathVariable("storeId") String storeId){
-        ServiceResultEnum serviceResult=storeService.delStore(storeId);
+    @Operation(summary = "删除店铺接口", description = "根据ID删除店铺")
+    public Result<String> delStore(@PathVariable("storeId") String storeId) {
+        ServiceResultEnum serviceResult = storeService.delStore(storeId);
 
         return null;
     }
 
     @PutMapping("/store/{storeId}/edit")
-    @Operation(summary = "修改店铺信息接口",description = "")
-    public Result<String> updateStoreInfo(@RequestBody @Parameter(name="storeUpdateInfoParam")StoreUpdateInfoParam storeUpdateInfoParam,
-                             @PathVariable("storeId") String storeId,
-                             @TokenRequired User user){
-        if(user.getUserType()!= UserType.MERCHANT){
+    @Operation(summary = "修改店铺信息接口", description = "")
+    public Result<String> updateStoreInfo(@RequestBody @Parameter(name = "storeUpdateInfoParam") StoreUpdateInfoParam storeUpdateInfoParam,
+                                          @PathVariable("storeId") String storeId,
+                                          @TokenRequired User user) {
+        if (user.getUserType() != UserType.MERCHANT) {
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        ServiceResultEnum serviceResult=storeService.updateInfo(storeUpdateInfoParam, storeId);
-        if(serviceResult==SUCCESS){
+        ServiceResultEnum serviceResult = storeService.updateInfo(storeUpdateInfoParam, storeId);
+        if (serviceResult == SUCCESS) {
             return ResultGenerator.genSuccessResult();
-        }
-        else if(serviceResult==UPDATE_FAILED){
+        } else if (serviceResult == UPDATE_FAILED) {
             return ResultGenerator.genFailResult(serviceResult.getResult());
         }
         return null;
@@ -97,61 +102,124 @@ public class StoreController {
 
     @PostMapping("/store/{storeId}/add_product")
     @Operation(summary = "添加商品接口", description = "")
-    public Result<String> addProduct(@RequestBody @Parameter(name="productAddParam")ProductAddParam productAddParam,
-                             @PathVariable("storeId")String storeId,
-                             @TokenRequired User user){
-        if(user.getUserType()!= UserType.MERCHANT){
+    public Result<String> addProduct(@RequestBody @Parameter(name = "productAddParam") ProductAddParam productAddParam,
+                                     @PathVariable("storeId") String storeId,
+                                     @TokenRequired User user) {
+        if (user.getUserType() != UserType.MERCHANT) {
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        String serviceResult=storeService.addProduct(productAddParam,storeId);
-        if(!serviceResult.equals("ADD_PRODUCT_FAILED")){
-            return ResultGenerator.genSuccessResult(serviceResult);
+        List<Store> storeList = storeMapper.selectByUserId(user.getUserId());
+        Store store = storeMapper.selectByStoreId(storeId);
+        if (store == null) {
+            return ResultGenerator.genFailResult(STORE_NOT_FOUND.getResult());
         }
-        else{
+        if (!storeList.contains(store)) {
+            return ResultGenerator.genFailResult(NO_PERMISSION_TO_STORE.getResult());
+        }
+        String serviceResult = storeService.addProduct(productAddParam, storeId);
+        if (!serviceResult.equals("ADD_PRODUCT_FAILED")) {
+            return ResultGenerator.genSuccessResult(serviceResult);
+        } else {
             return ResultGenerator.genFailResult(serviceResult);
         }
     }
 
     @PutMapping("/store/{storeId}/products/{productId}/edit")
     @Operation(summary = "修改商品接口", description = "")
-    public Result<String> updateProductInfo(@RequestBody @Parameter(name="productUpdateParam")ProductUpdateParam productUpdateParam,
-                                            @PathVariable("storeId")String storeId,
-                                            @PathVariable("productId")String productId,
-                                            @TokenRequired User user){
-        if(user.getUserType()!= UserType.MERCHANT){
+    public Result<String> updateProductInfo(@RequestBody @Parameter(name = "productUpdateParam") ProductUpdateParam productUpdateParam,
+                                            @PathVariable("storeId") String storeId,
+                                            @PathVariable("productId") String productId,
+                                            @TokenRequired User user) {
+        if (user.getUserType() != UserType.MERCHANT) {
             return ResultGenerator.genFailResult(USER_TYPE_ERROR.getResult());
         }
-        ServiceResultEnum serviceResult=storeService.updateProduct(productUpdateParam,storeId,productId);
-        if(serviceResult==SUCCESS){
-            return ResultGenerator.genSuccessResult();
+        List<Store> storeList = storeMapper.selectByUserId(user.getUserId());
+        Store store = storeMapper.selectByStoreId(storeId);
+        if (store == null) {
+            return ResultGenerator.genFailResult(STORE_NOT_FOUND.getResult());
         }
-        else{
+        if (!storeList.contains(store)) {
+            return ResultGenerator.genFailResult(NO_PERMISSION_TO_STORE.getResult());
+        }
+        ServiceResultEnum serviceResult = storeService.updateProduct(productUpdateParam, storeId, productId);
+        if (serviceResult == SUCCESS) {
+            return ResultGenerator.genSuccessResult();
+        } else {
             return ResultGenerator.genFailResult(serviceResult.getResult());
         }
     }
 
+    @PostMapping("/store/{storeId}/products/{productId}/upload_image")
+    @Operation(summary = "上传商品图片接口", description = "")
+    public Result<String> uploadProductImage(@PathVariable("storeId") String storeId,
+                                             @PathVariable("productId") String productId,
+                                             @TokenRequired User user,
+                                             @RequestParam("file") MultipartFile file) {
+        Store store = storeMapper.selectByStoreId(storeId);
+        Product product = productMapper.selectByProductId(productId);
+        if (store == null || product == null) {
+            return ResultGenerator.genFailResult("STORE OR PRODUCT NOT FOUND");
+        }
+        if (file.isEmpty()) {
+            return ResultGenerator.genFailResult("FILE NOT FOUND");
+        }
+        if (user.getUserType() != UserType.MERCHANT) {
+            return ResultGenerator.genFailResult("USER TYPE ERROR");
+        }
+        List<Store> storeList = storeMapper.selectByUserId(user.getUserId());
+        if (!storeList.contains(store)) {
+            return ResultGenerator.genFailResult(NO_PERMISSION_TO_STORE.getResult());
+        }
+        try {
+            // 创建目录
+            File directory = new File(UPLOAD_IMAGE_DIR);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = product.getProductName()
+                    + "_" + System.currentTimeMillis()
+                    + "_" + file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_IMAGE_DIR, fileName);
+            Files.copy(file.getInputStream(), path);
+
+            // 构造文件的 URL，用于前端访问
+            String fileDownloadUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/images/")
+                    .path(fileName)
+                    .toUriString();
+            product.setProductImage(fileDownloadUrl);
+            if (productMapper.updateByProductId(product) > 0)
+                return ResultGenerator.genSuccessResult(fileDownloadUrl);
+            return ResultGenerator.genFailResult("UPLOAD IMAGE FAILED");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @GetMapping("/store/{storeId}/detail")
-    @Operation(summary = "(客户或店主预览)查看店铺信息接口",description = "")
-    public Result<StoreVO> getStoreDetail(@PathVariable("storeId")String storeId, @TokenRequired User user){
-        Store store=storeMapper.selectByStoreId(storeId);
-        if(store==null||user==null){
+    @Operation(summary = "(客户或店主预览)查看店铺信息接口", description = "")
+    public Result<StoreVO> getStoreDetail(@PathVariable("storeId") String storeId, @TokenRequired User user) {
+        Store store = storeMapper.selectByStoreId(storeId);
+        if (store == null || user == null) {
             return ResultGenerator.genSuccessResult("FAILED");
         }
-        StoreVO storeVO=new StoreVO();
-        BeanUtils.copyProperties(store,storeVO);
+        StoreVO storeVO = new StoreVO();
+        BeanUtils.copyProperties(store, storeVO);
         return ResultGenerator.genSuccessResult(storeVO);
     }
 
     @GetMapping("/store/owner/{userId}")
-    @Operation(summary = "查找用户名下店铺",description = "")
+    @Operation(summary = "查找用户名下店铺", description = "")
     public Result<List<StoreListVO>> getStoreByUserId(@PathVariable("userId") String userId,
-                                                      @TokenRequired User user){
-        List<Store> storeList=storeMapper.selectByUserId(userId);
-        if(storeList!=null){
-            List<StoreListVO> storeListVOList=new ArrayList<>();
-            for(Store i:storeList){
-                StoreListVO t=new StoreListVO();
-                BeanUtils.copyProperties(i,t);
+                                                      @TokenRequired User user) {
+        List<Store> storeList = storeMapper.selectByUserId(userId);
+        if (storeList != null) {
+            List<StoreListVO> storeListVOList = new ArrayList<>();
+            for (Store i : storeList) {
+                StoreListVO t = new StoreListVO();
+                BeanUtils.copyProperties(i, t);
                 storeListVOList.add(t);
             }
             return ResultGenerator.genSuccessResult(storeListVOList);
@@ -160,15 +228,15 @@ public class StoreController {
     }
 
     @GetMapping("/store/{storeId}/products")
-    @Operation(summary = "查找店铺里的商品",description = "")
+    @Operation(summary = "查找店铺里的商品", description = "")
     public Result<List<ProductListVO>> getProductsByStoreId(@PathVariable("storeId") String storeId,
-                                                            @TokenRequired User user){
-        List<Product> list=productMapper.selectByStoreId(storeId);
-        if(list!=null){
-            List<ProductListVO> productListVOList =new ArrayList<ProductListVO>();
-            for(Product i:list){
-                ProductListVO t=new ProductListVO();
-                BeanUtils.copyProperties(i,t);
+                                                            @TokenRequired User user) {
+        List<Product> list = productMapper.selectByStoreId(storeId);
+        if (list != null) {
+            List<ProductListVO> productListVOList = new ArrayList<ProductListVO>();
+            for (Product i : list) {
+                ProductListVO t = new ProductListVO();
+                BeanUtils.copyProperties(i, t);
                 productListVOList.add(t);
             }
             return ResultGenerator.genSuccessResult(productListVOList);
@@ -177,18 +245,18 @@ public class StoreController {
     }
 
     @GetMapping("/store/list/search")
-    @Operation(summary = "根据搜索分页查看店铺列表",description = "")
+    @Operation(summary = "根据搜索分页查看店铺列表", description = "")
     public Result<List<StoreListVO>> getStoreListBySearch(@RequestBody PageQuery query,
-                                                    @TokenRequired User user){
-        if(user==null){
+                                                          @TokenRequired User user) {
+        if (user == null) {
             return ResultGenerator.genFailResult("USER NOT FOUND");
         }
-        List<Store> storeList=storeMapper.findStoreListBySearch(query);
-        if(storeList!=null){
-            List<StoreListVO> storeListVOList=new ArrayList<>();
-            for(Store i:storeList){
-                StoreListVO t=new StoreListVO();
-                BeanUtils.copyProperties(i,t);
+        List<Store> storeList = storeMapper.findStoreListBySearch(query);
+        if (storeList != null) {
+            List<StoreListVO> storeListVOList = new ArrayList<>();
+            for (Store i : storeList) {
+                StoreListVO t = new StoreListVO();
+                BeanUtils.copyProperties(i, t);
                 storeListVOList.add(t);
             }
             return ResultGenerator.genSuccessResult(storeListVOList);
@@ -197,17 +265,17 @@ public class StoreController {
     }
 
     @GetMapping("/store/list")
-    @Operation(summary = "查看店铺列表",description = "")
-    public Result<List<StoreListVO>> getAllStores(@TokenRequired User user){
-        if(user==null){
+    @Operation(summary = "查看店铺列表", description = "")
+    public Result<List<StoreListVO>> getAllStores(@TokenRequired User user) {
+        if (user == null) {
             return ResultGenerator.genFailResult("USER NOT FOUND");
         }
-        List<Store> storeList=storeMapper.findAllStores();
-        if(storeList!=null){
-            List<StoreListVO> storeListVOList=new ArrayList<>();
-            for(Store i:storeList){
-                StoreListVO t=new StoreListVO();
-                BeanUtils.copyProperties(i,t);
+        List<Store> storeList = storeMapper.findAllStores();
+        if (storeList != null) {
+            List<StoreListVO> storeListVOList = new ArrayList<>();
+            for (Store i : storeList) {
+                StoreListVO t = new StoreListVO();
+                BeanUtils.copyProperties(i, t);
                 storeListVOList.add(t);
             }
             return ResultGenerator.genSuccessResult(storeListVOList);
