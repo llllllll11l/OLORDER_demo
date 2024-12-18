@@ -22,16 +22,20 @@ import com.example.demo.entity.User;
 import com.example.demo.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -149,12 +153,14 @@ public class StoreController {
         }
     }
 
-    @PostMapping("/store/{storeId}/products/{productId}/upload_image")
-    @Operation(summary = "上传商品图片接口", description = "")
-    public Result<String> uploadProductImage(@PathVariable("storeId") String storeId,
-                                             @PathVariable("productId") String productId,
-                                             @TokenRequired User user,
-                                             @RequestParam("file") MultipartFile file) {
+    /*新改*/
+    @Operation(summary = "上传商品图片接口")
+    @PostMapping(value = "/store/{storeId}/products/{productId}/upload_image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result<String> uploadProductImage(
+            @PathVariable("storeId") String storeId,
+            @PathVariable("productId") String productId,
+            @RequestPart("file") MultipartFile file, //使用 @RequestPart而非 @RequestParam
+            @TokenRequired User user) {
         Store store = storeMapper.selectByStoreId(storeId);
         Product product = productMapper.selectByProductId(productId);
         if (store == null || product == null) {
@@ -167,36 +173,58 @@ public class StoreController {
             return ResultGenerator.genFailResult("USER TYPE ERROR");
         }
         List<Store> storeList = storeMapper.selectByUserId(user.getUserId());
-        if (!storeList.contains(store)) {
+        if (storeList == null || !storeList.contains(store)) {
             return ResultGenerator.genFailResult(NO_PERMISSION_TO_STORE.getResult());
         }
         try {
-            // 创建目录
             File directory = new File(UPLOAD_IMAGE_DIR);
-            if (!directory.exists()) {
-                directory.mkdirs();
+            if (!directory.exists() && !directory.mkdirs()) {
+                return ResultGenerator.genFailResult("FAILED TO CREATE UPLOAD DIRECTORY");
             }
 
-            String fileName = product.getProductName()
-                    + "_" + System.currentTimeMillis()
-                    + "_" + file.getOriginalFilename();
+            String originalFileName = file.getOriginalFilename();
+            String cleanFileName = originalFileName != null ? originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_") : "unknown";
+            String fileName = product.getProductName() + "_" + System.currentTimeMillis() + "_" + cleanFileName;
             Path path = Paths.get(UPLOAD_IMAGE_DIR, fileName);
+
+            //校验文件类型
+            String contentType = file.getContentType();
+            if (contentType == null || (!contentType.startsWith("image/"))) {
+                return ResultGenerator.genFailResult("INVALID FILE TYPE");
+            }
+
             Files.copy(file.getInputStream(), path);
 
-            // 构造文件的 URL，用于前端访问
             String fileDownloadUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/images/")
                     .path(fileName)
                     .toUriString();
+
+            //更新数据库
+            String oldImagePath = product.getProductImage();
             product.setProductImage(fileDownloadUrl);
-            if (productMapper.updateByProductId(product) > 0)
+            if (productMapper.updateByProductId(product) > 0) {
+                //删除旧图片（如果有）
+                if (oldImagePath != null) {
+                    File oldFile = new File(oldImagePath);
+                    if (oldFile.exists() && !oldFile.delete()) {
+                        System.err.println("Failed to delete old file: " + oldImagePath);
+                    }
+                }
                 return ResultGenerator.genSuccessResult(fileDownloadUrl);
-            return ResultGenerator.genFailResult("UPLOAD IMAGE FAILED");
+            } else {
+                Files.deleteIfExists(path); // 数据库失败则删除新上传文件
+                return ResultGenerator.genFailResult("UPLOAD IMAGE FAILED");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResultGenerator.genFailResult("FILE UPLOAD ERROR: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            return ResultGenerator.genFailResult("UNKNOWN ERROR OCCURRED");
         }
-        return null;
     }
+    /**/
 
     @GetMapping("/store/{storeId}/detail")
     @Operation(summary = "(客户或店主预览)查看店铺信息接口", description = "")

@@ -53,6 +53,13 @@
         </trim>
     </insert>
 
+    <!--新加-->
+    <delete id="deleteByUserId" parameterType="java.lang.String">
+        DELETE FROM user_tokens
+        WHERE user_id = #{userId}
+    </delete>
+    <!--新加-->
+
     <update id="updateByUserIdSelective" parameterType="com.example.demo.entity.UserToken">
         update user_tokens
         <set>

@@ -163,6 +163,10 @@
             <if test="isAdmin != null">
                 is_admin=#{isAdmin,jdbcType=BOOLEAN},
             </if>
+            <!--新加-->
+            <if test="lastLoginDate != null">
+                last_login_date = #{lastLoginDate,jdbcType=TIMESTAMP},
+            </if>
         </set>
         where user_id = #{userId,jdbcType=VARCHAR}
     </update>

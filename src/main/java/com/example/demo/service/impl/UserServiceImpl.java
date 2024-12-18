@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         if(user!=null){
             long now=System.currentTimeMillis();
             user.setLastLoginDate(new Timestamp(System.currentTimeMillis()));
+            userMapper.updateByUserId(user);/*将lastLoginDate上传表中*/
             if(user.getStatus()==DELETED)
                 return "USER_DELETED";
             String token=generateToken();

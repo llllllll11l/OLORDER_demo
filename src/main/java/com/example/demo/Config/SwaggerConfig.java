@@ -15,6 +15,13 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                /*新加*/
+                .components(new Components()
+                        .addSchemas("MultipartFile",
+                                new Schema<>()
+                                        .type("string")
+                                        .format("binary")))
+                /**/
                 .info(new Info()
                         .title("接口文档")
                         .version("2.0")
